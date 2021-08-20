@@ -1,7 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'visual/main_visual.dart';
 
 void main() {
   runApp(new MaterialApp(
@@ -20,7 +20,7 @@ class _main_screenState extends State<main_screen> {
   Widget build(BuildContext context) {
 
 
-
+    // Change statusBar color
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           statusBarColor: Color(0xff1B76FF),
@@ -31,93 +31,83 @@ class _main_screenState extends State<main_screen> {
 
     return Scaffold(
 
+      //start the screen
       body: SafeArea(
-
         child: Container(
 
+          // Background color
+          color: Color(0xffFFFFFF),
+          // it divides all the elements into a column
           child: Column(
-
+            // The full column will take all the space in the
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
 
-              //Primera línea, texto de la app
+            
+              // Line 1
+              title(),
+
+              // Line 2
+              line_text("Lists", "0 lists"),
+
+              // Línea 3 de elementos en lista
               Padding(
-                padding: EdgeInsets.only(top: 15.0, left:15.0),
-                
-                
+                padding: EdgeInsets.only(
+                  top:20.0, 
+                  left: 10.0, 
+                  right: 10.0),
                 child: Row(
                   children: <Widget>[
-                    new Icon(
-                      Icons.arrow_back_ios, 
-                      color: Color(0xff202B57), 
-                      size: 18.0),
+
+                    // When there are lists
+
+                    // When they are NOT lists
+                    no_lists()
+                    
+
+                  ],
+                ),
+              ),
+
+
+
+
+
+
+              // Línea 4
+              line_text("Instant tasks", "0 tasks"),
+
+
+
+              // When -instant tasks- is empty 
+              no_instant_tasks(),
+
+
+
               
-                    new Text(
-                      "Tasks",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xff202B57),
-                      ),
-                    )
-                  ],
-                )
-              ),
-
-              //Second line
-
-              Padding(
-                padding: EdgeInsets.only(top: 40.0, left: 20.0, right: 40.0),
-
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: new Text("Lists", style: TextStyle(fontSize: 14.0, color: Color(0xffA9AECD)))),
-                    new Text("0 lists", style: TextStyle(fontSize: 14.0, color: Color(0xffA9AECD)))
-                  ],
-                ),
-              ),
-
-
-
-              Padding(
-                padding: EdgeInsets.only(top:20.0, left: 10.0, right: 10.0),
-                child: Row(
-                  children: <Widget>[
-
-
-                    // Cuando está vacío entonces pongo esto
-                    Card(
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Image(
-                              image: AssetImage('assets/relax2.png'),
-                              width: 128,
-                              height: 128,
-                            ),
-                            )
-                        ],
-                      ),
-                    )
-
-                  ],
-                ),
-              )
-
-
-
-
-
-
+            
 
 
             ],
-
-
-
-            ),
           ),
+
+
+        ),
       ),
+    
+      floatingActionButton: FloatingActionButton(
+        onPressed: spider,
+        child: Icon(
+          Icons.add, color: Color(0xffFFFFFF),
+        ),),
+
+
+
     );
   }
+}
+
+
+void spider(){
+
 }
