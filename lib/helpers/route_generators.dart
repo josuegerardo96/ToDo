@@ -18,14 +18,14 @@ class RouteGenerator{
         return MaterialPageRoute(builder: (_) => main_screen());
       
 
-
+      // IMPROVE making this more interesting
       case '/list_lists':
         return MaterialPageRoute(builder: (_) => list_of_Lists());
 
 
       
 
-      // Hacer una pantalla de error
+      // ToDo Crear página para errores
       default:
         return MaterialPageRoute(builder: (_) => main_screen());
       
