@@ -27,8 +27,19 @@ class title extends StatelessWidget{
                     fontSize: 18.0,
                     color: Color(0xff202B57),
                   ),
-                )
+                ),
+
+
+                
+
+
+
+
+                
               ],
+
+
+              
             )
           );
   }
@@ -170,6 +181,7 @@ class no_lists extends StatelessWidget{
 
 
 
+// Card that shows there's nothing in the instant tasks
 class no_instant_tasks extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -260,3 +272,102 @@ class no_instant_tasks extends StatelessWidget{
               );
   }
 }
+
+
+
+
+
+
+
+class no_list_in_lists extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+
+
+    return Expanded(
+
+
+        child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                
+                Card(
+                    color: Color(0xffF9FAFF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                    ),
+
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical:20.0, horizontal: 40.0),
+                      child: Column(
+                        children: <Widget>[
+                    
+                    
+                          Image(
+                            image: AssetImage('assets/relax2.png'),
+                            height: 100,
+                            width: 100,
+                          ),
+                    
+                          SizedBox(height: 20.0),
+                          
+                          Text(
+                            "You got nothing to do",
+                            style: TextStyle(
+                              fontSize: 14.0, 
+                              color: Color(0xffA9AECD)
+                            ),
+                          ),
+
+
+
+                          SizedBox(height: 20.0),
+
+
+                          ElevatedButton(
+                            onPressed: spider, 
+                            style: ElevatedButton.styleFrom(
+                              shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(20.0))),
+                            child: new Text(
+                              "New list", 
+                              style: TextStyle(
+                                fontSize: 14.0, 
+                                color: Color(0xffFFFFFF),
+                                
+                              ),
+                              
+                            )
+                          )
+                          
+                          
+                    
+                    
+                    
+                    
+                    
+                        ],
+                      ),
+                    )
+                    
+                )
+
+
+
+              ],
+            ),
+            
+            
+
+
+
+
+
+          
+        ),
+              );
+  }
+}
+
+
