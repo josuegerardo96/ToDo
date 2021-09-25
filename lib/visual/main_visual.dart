@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../main.dart';
 
 
@@ -23,7 +24,7 @@ class title extends StatelessWidget{
           
                 new Text(
                   "Tasks",
-                  style: TextStyle(
+                  style: GoogleFonts.roboto(
                     fontSize: 18.0,
                     color: Color(0xff202B57),
                   ),
