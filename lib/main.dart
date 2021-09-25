@@ -162,6 +162,7 @@ class _main_screenState extends State<main_screen> {
       taskModel(taskTopic: "Spiderman 12", state: true),
       taskModel(taskTopic: "Spiderman 13", state: true),
       taskModel(taskTopic: "Spiderman 14", state: true),
+      taskModel(taskTopic: "Spiderman 15 es una pelicula rara", state: true),
 
 
     ];
