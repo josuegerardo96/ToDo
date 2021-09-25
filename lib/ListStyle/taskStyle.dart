@@ -6,7 +6,11 @@ import 'package:my_to_do/helpers/my_style.dart';
 
 
 
+// This file returns the instant task style
 
+
+
+// This class return a FULL ListView of the instant tasks to the main screen
 class taskListStyle extends StatelessWidget {
 
   final List<taskModel> _tasks;
@@ -20,20 +24,16 @@ class taskListStyle extends StatelessWidget {
       children: _buildTaskList(),
     );
   }
+
+  // Map all the tasks
   List<taskStyle> _buildTaskList(){
     return _tasks.map((taski) => new taskStyle(taski)).toList();
   }
 }
 
 
-
-
-
-
-
+// Give a task for being create
 class taskStyle extends StatefulWidget {
-
-
   final taskModel _task;
   taskStyle(this._task);
 
@@ -41,33 +41,34 @@ class taskStyle extends StatefulWidget {
   State<taskStyle> createState() => _taskStyleState();
 }
 
+
+// Draw every task in a stateful element
 class _taskStyleState extends State<taskStyle> {
   @override
   Widget build(BuildContext context) {
 
     return new Container (
-      
-      
-      
-      
-
 
       child: Padding(
         padding: EdgeInsets.only(left: 10.0, top:10.0),
         child: Row(
-          
-      
-          
+         
           children: <Widget>[
       
-      
+            // Button for check the state of the task
             new GestureDetector(
 
               onTap:(){
-                
                 setState(() {
-                  widget._task.state ? widget._task.state = false : widget._task.state = true;
+
+                  // Changes the state of the task
+                  widget._task.state ? 
+                    widget._task.state = false 
+                    : 
+                    widget._task.state = true;
                 });
+
+                // ToDo Crear aquí función para cambiar en la base de datos el estado de este task
                 
               },
 
@@ -100,13 +101,13 @@ class _taskStyleState extends State<taskStyle> {
                 
             
                 onTap: (){
-                  print("kkkkk");
+
+                  // ToDo enviar a donde leer el task completo
+                  
                 },
             
             
                 child: Expanded(
-                  
-                
                   child: Container(
                     
                     decoration: new BoxDecoration(
@@ -115,7 +116,7 @@ class _taskStyleState extends State<taskStyle> {
                     ),
                     
                     
-                    // Esto es solo del texto dentro de la vara
+                    // TEXT
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
                       child: Text(
@@ -126,13 +127,11 @@ class _taskStyleState extends State<taskStyle> {
                               color: Color(0xff202B57
                               ),
               
-              
                               textStyle:
-              
-                              widget._task.state ?
-                                TextStyle(decoration: TextDecoration.none)
-                              :
-                                TextStyle(decoration: TextDecoration.lineThrough)
+                                widget._task.state ?
+                                    TextStyle(decoration: TextDecoration.none)
+                                  :
+                                    TextStyle(decoration: TextDecoration.lineThrough)
               
               
               

@@ -1,42 +1,43 @@
-import 'dart:ui';
+// ignore_for_file: camel_case_types, non_constant_identifier_names, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../main.dart';
+import 'package:my_to_do/helpers/my_style.dart';
+
+
+// EVERYTHING IN THIS CODE
+
+// Main title of the main screen
+// Lines of text like:    Lists ............. 0 lists
+// Card shown when there is any list created
+// Card that shows there's nothing in the instant tasks
+// Empty space in the screen of list of lists
 
 
 
 
-// The title
+
+// MAIN TITLE OF THE MAIN SCREEN
 class title extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Padding(
               
             padding: EdgeInsets.only(top: 15.0, left:15.0),
-            
-
             child: Row(
               children: <Widget>[
                 new Icon(
                   Icons.arrow_back_ios, 
-                  color: Color(0xff202B57), 
+                  color: my_Colors.text_color_main, 
                   size: 18.0),
           
                 new Text(
                   "Tasks",
                   style: GoogleFonts.roboto(
                     fontSize: 18.0,
-                    color: Color(0xff202B57),
+                    color: my_Colors.text_color_main,
                   ),
                 ),
-
-
-                
-
-
-
-
-                
               ],
 
 
@@ -45,9 +46,6 @@ class title extends StatelessWidget{
           );
   }
 }
-
-
-
 
 
 
@@ -71,7 +69,7 @@ class line_text extends StatelessWidget{
                         this.text, 
                         style: TextStyle(
                           fontSize: 14.0, 
-                          color: Color(0xffA9AECD)
+                          color: my_Colors.tex_color_grey
                         )
                       )
                     ),
@@ -81,7 +79,7 @@ class line_text extends StatelessWidget{
                       this.count_text, 
                       style: TextStyle(
                         fontSize: 14.0, 
-                        color: Color(0xffA9AECD)
+                        color: my_Colors.tex_color_grey
                       )
                     )
                   ],
@@ -90,10 +88,6 @@ class line_text extends StatelessWidget{
 
   }
 }
-
-
-
-
 
 
 
@@ -112,8 +106,7 @@ class no_lists extends StatelessWidget{
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0)
                           ),
-
-                          color: Color(0xffF9FAFF),
+                          color: my_Colors.background_color_task,
 
 
 
@@ -142,10 +135,10 @@ class no_lists extends StatelessWidget{
                                         "You have no lists",
                                         style: TextStyle(
                                           fontSize: 14.0, 
-                                          color: Color(0xffA9AECD)
+                                          color: my_Colors.tex_color_grey
                                         ),
                                       ),
-                                              
+                                            
                                       Padding(
                                         padding: EdgeInsets.only(top:10.0),
                                         child: ElevatedButton(
@@ -154,8 +147,14 @@ class no_lists extends StatelessWidget{
                                               borderRadius: new BorderRadius.circular(30.0),
                                             ),
                                           ),
-                                          onPressed: spider, 
-                                          child: new Text("New list", style: TextStyle(fontSize: 14.0, color: Color(0xffFFFFFF)))),
+                                          onPressed: () => {}, 
+                                          child: new Text(
+                                            "New list", 
+                                            style: TextStyle(
+                                              fontSize: 14.0, 
+                                              color: my_Colors.background_color_white)
+                                            )
+                                          ),
                                       )
                                               
                                               
@@ -197,7 +196,7 @@ class no_instant_tasks extends StatelessWidget{
               children: <Widget>[
                 
                 Card(
-                    color: Color(0xffF9FAFF),
+                    color: my_Colors.background_color_task,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)
                     ),
@@ -220,7 +219,7 @@ class no_instant_tasks extends StatelessWidget{
                             "You got nothing to do",
                             style: TextStyle(
                               fontSize: 14.0, 
-                              color: Color(0xffA9AECD)
+                              color: my_Colors.tex_color_grey
                             ),
                           ),
 
@@ -230,7 +229,7 @@ class no_instant_tasks extends StatelessWidget{
 
 
                           ElevatedButton(
-                            onPressed: spider, 
+                            onPressed: () => {}, 
                             style: ElevatedButton.styleFrom(
                               shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(20.0))),
@@ -238,48 +237,27 @@ class no_instant_tasks extends StatelessWidget{
                               "New task", 
                               style: TextStyle(
                                 fontSize: 14.0, 
-                                color: Color(0xffFFFFFF),
+                                color: my_Colors.background_color_white,
                                 
                               ),
                               
                             )
                           )
-                          
-                          
-                    
-                    
-                    
-                    
-                    
                         ],
                       ),
-                    )
-                    
+                    )             
                 )
-
-
-
               ],
             ),
-            
-            
-
-
-
-
-
-          
         ),
-              );
+    );
   }
 }
 
 
 
 
-
-
-
+// Empty space in the screen of list of lists
 class no_list_in_lists extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -294,7 +272,7 @@ class no_list_in_lists extends StatelessWidget{
               children: <Widget>[
                 
                 Card(
-                    color: Color(0xffF9FAFF),
+                    color: my_Colors.background_color_task,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)
                     ),
@@ -317,7 +295,7 @@ class no_list_in_lists extends StatelessWidget{
                             "You got nothing to do",
                             style: TextStyle(
                               fontSize: 14.0, 
-                              color: Color(0xffA9AECD)
+                              color: my_Colors.tex_color_grey
                             ),
                           ),
 
@@ -327,7 +305,7 @@ class no_list_in_lists extends StatelessWidget{
 
 
                           ElevatedButton(
-                            onPressed: spider, 
+                            onPressed: () => {}, 
                             style: ElevatedButton.styleFrom(
                               shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(20.0))),
@@ -335,39 +313,20 @@ class no_list_in_lists extends StatelessWidget{
                               "New list", 
                               style: TextStyle(
                                 fontSize: 14.0, 
-                                color: Color(0xffFFFFFF),
-                                
+                                color: my_Colors.background_color_white,
                               ),
-                              
+
                             )
                           )
-                          
-                          
-                    
-                    
-                    
-                    
-                    
                         ],
                       ),
                     )
-                    
+            
                 )
-
-
-
               ],
             ),
-            
-            
-
-
-
-
-
-          
         ),
-              );
+     );
   }
 }
 

@@ -21,12 +21,4 @@ class my_Colors {
   static Color background_color_circle = Color(0xffA7AEE5);
   static Color background_color_green = Color(0xff06D6A0);
 
-
-  
-
-
-
-
-
-
 }

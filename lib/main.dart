@@ -10,87 +10,92 @@ import 'package:my_to_do/helpers/route_generators.dart';
 import 'visual/main_visual.dart';
 
 void main() {
-
-
   runApp(new MaterialApp(
     debugShowCheckedModeBanner: false,
 
-
-
     // main route of the app
     initialRoute: '/',
-
     // In the file "route_generates" are all the routes used in the app
     onGenerateRoute: RouteGenerator.generateRoute,
 
   ));
 }
 
+
+
+// Starts the code for the main screen
 class main_screen extends StatefulWidget {
   @override
   _main_screenState createState() => _main_screenState();
-
-  
 }
 
 class _main_screenState extends State<main_screen> {
   
-  
   @override
   Widget build(BuildContext context) {
+
     // Change statusBar color
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: my_Colors.main_color
-    )
-  );
+        statusBarColor: my_Colors.main_color
+      )
+    );
+
 
     return Scaffold(
+
+
       //start the screen
       body: SafeArea(
-        child: Container(
-          // Background color
-          color: my_Colors.background_color_white,
-          // it divides all the elements into a column
-          child: Column(
-            // The full column will take all the space in the
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              // Line 1
-              title(),
 
-              // Line 2
+        child: Container(
+          
+          color: my_Colors.background_color_white,
+          
+          child: Column(
+            
+            // The full column will take all the space in the screen
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            
+            
+            children: <Widget>[
+              
+              title(),
               line_text("Lists", "0 lists"),
 
-              // Línea 3 de elementos en lista
+              
+              // LIST OF LISTS
               Padding(
                 padding: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
                 child: Row(
+
                   children: <Widget>[
+
                     // When there are lists
 
                     
 
                     // When they are NOT lists
                     no_lists()
+
+
                   ],
                 ),
               ),
 
-              // Línea 4
+  
               line_text("Instant tasks", "0 tasks"),
 
-
-
-
-
               
+              // INSTANT TASKS
 
-            Expanded(child: taskListStyle(_buildList()))
+              // When the list has something shows this
+              Expanded(child: taskListStyle(_returnListofInstantTasks()))
 
 
-
-              // When -instant tasks- is empty
+              // If the list has nothing shows this
               //no_instant_tasks(),
+
+
             ],
           ),
         ),
@@ -111,7 +116,11 @@ class _main_screenState extends State<main_screen> {
         children: <Widget>[
 
           IconButton(onPressed: ()=>{_goTo_write_tasks()}, icon: Icon(Icons.edit, color: my_Colors.text_color_main,)),
+
+          // ToDo Eliminar todos los elementos con estado false
           IconButton(onPressed: ()=>{_delete_all_done()}, icon: Icon(Icons.delete, color: my_Colors.text_color_main)),
+
+          // ToDo Pantalla para crear listas
           IconButton(onPressed: ()=>{_goTo_list_of_lists(context)}, icon: Icon(Icons.list, color: my_Colors.text_color_main)),
 
         ],
@@ -141,7 +150,7 @@ class _main_screenState extends State<main_screen> {
 
 
 
-  _buildList(){
+  _returnListofInstantTasks(){
 
 
 
@@ -166,12 +175,22 @@ class _main_screenState extends State<main_screen> {
 
 
     ];
+    
+    // ToDo Crear simulador de base de datos
+
+    // ToDo Obtener los elementos de una base de datos
+
+    // ToDo Una vez obtenidos los elementos de la base de datos se debe de ordenar donde los false van en la parte baja
+
+
+
   }
 
+  // ToDo Crear ventanas para escritura de -> Lista , Solo ver y editar elemento
 
 
 
 
 }
 
-void spider() {}
+
