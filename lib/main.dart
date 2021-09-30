@@ -3,8 +3,11 @@
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_to_do/ListStyle/taskStyle.dart';
+import 'package:my_to_do/ListStyle/task_list.dart';
+import 'package:my_to_do/DB/db_instant_task.dart';
+import 'package:my_to_do/DB/db_list_tasks.dart';
 import 'package:my_to_do/Objects/task.dart';
+import 'package:my_to_do/Objects/taskList.dart';
 import 'package:my_to_do/helpers/my_style.dart';
 import 'package:my_to_do/helpers/route_generators.dart';
 import 'visual/main_visual.dart';
@@ -25,11 +28,26 @@ void main() {
 
 // Starts the code for the main screen
 class main_screen extends StatefulWidget {
+
+  
+
   @override
   _main_screenState createState() => _main_screenState();
 }
 
 class _main_screenState extends State<main_screen> {
+
+
+  List<taskModel> MyinstantTasksList = [];
+  List<taskListModel> MytaskListList = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    MyinstantTasksList = startDB();
+    MytaskListList = db_list_tasks().start_myListOfTasks();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -42,27 +60,17 @@ class _main_screenState extends State<main_screen> {
 
 
     return Scaffold(
-
-
       //start the screen
       body: SafeArea(
-
-        child: Container(
-          
-          color: my_Colors.background_color_white,
-          
-          child: Column(
-            
+        child: Container(    
+          color: my_Colors.background_color_white,   
+          child: Column(  
             // The full column will take all the space in the screen
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            
-            
-            children: <Widget>[
-              
+            crossAxisAlignment: CrossAxisAlignment.stretch, 
+            children: <Widget>[ 
               title(),
               line_text("Lists", "0 lists"),
 
-              
               // LIST OF LISTS
               Padding(
                 padding: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
@@ -72,7 +80,7 @@ class _main_screenState extends State<main_screen> {
 
                     // When there are lists
 
-                    
+                    //MytaskListList.length > 0 ? ListOfListsStyle(MytaskListList) : no_lists(),
 
                     // When they are NOT lists
                     no_lists()
@@ -83,25 +91,24 @@ class _main_screenState extends State<main_screen> {
               ),
 
   
-              line_text("Instant tasks", "0 tasks"),
+              line_text("Instant tasks", (
+                MyinstantTasksList.where((e) => e.getState==false).length).toString()+
+                " / "+
+                 MyinstantTasksList.length.toString()),
 
-              
+              SizedBox(height: 15.0),
+
               // INSTANT TASKS
-
-              // When the list has something shows this
-              Expanded(child: taskListStyle(_returnListofInstantTasks()))
-
-
-              // If the list has nothing shows this
-              //no_instant_tasks(),
-
+              Expanded(            
+                child: 
+                  MyinstantTasksList.length > 0 ? 
+                        taskListStyle(MyinstantTasksList) : no_instant_tasks()
+              )
 
             ],
           ),
         ),
       ),
-
-
 
 
       floatingActionButton: FabCircularMenu(
@@ -115,10 +122,30 @@ class _main_screenState extends State<main_screen> {
 
         children: <Widget>[
 
-          IconButton(onPressed: ()=>{_goTo_write_tasks()}, icon: Icon(Icons.edit, color: my_Colors.text_color_main,)),
+          IconButton(onPressed: ()=>{_goTo_write_tasks(taskModel(taskTopic: "", state: false))}, icon: Icon(Icons.edit, color: my_Colors.text_color_main,)),
 
-          // ToDo Eliminar todos los elementos con estado false
-          IconButton(onPressed: ()=>{_delete_all_done()}, icon: Icon(Icons.delete, color: my_Colors.text_color_main)),
+
+          IconButton(onPressed:(){
+
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("All done tasks removed"),
+                duration: const Duration(seconds: 3),
+
+              )
+            );
+            
+              setState(() { 
+                  MyinstantTasksList.removeWhere((t) => t.getState==false);  
+                });
+              },
+
+
+               
+          
+              icon: Icon(Icons.delete, color: my_Colors.text_color_main)
+          ),
 
           // ToDo Pantalla para crear listas
           IconButton(onPressed: ()=>{_goTo_list_of_lists(context)}, icon: Icon(Icons.list, color: my_Colors.text_color_main)),
@@ -131,62 +158,37 @@ class _main_screenState extends State<main_screen> {
 
 
     );
+
+
+    
   }
 
   
 
-
+  // It goes to the list of lists
   void _goTo_list_of_lists(BuildContext context) {
     Navigator.popAndPushNamed(context, "/list_lists");
   }
 
-  void _goTo_write_tasks(){
-    Navigator.of(context).pushNamed('/write_task');
-  }
 
-  void _delete_all_done(){
-    print("Borrando la hostia");
-  }
-
-
-
-  _returnListofInstantTasks(){
-
-
-
-    return <taskModel>[
-
-
-      taskModel(taskTopic: "Spiderman 1", state: true),
-      taskModel(taskTopic: "Spiderman 2", state: true),
-      taskModel(taskTopic: "Spiderman 3 es la peor pelicula de la saga de sam raimi pero igual la disfrute mucho", state: true),
-      taskModel(taskTopic: "Spiderman 4", state: true),
-      taskModel(taskTopic: "Spiderman 5", state: true),
-      taskModel(taskTopic: "Spiderman 6", state: false),
-      taskModel(taskTopic: "Spiderman 7", state: false),
-      taskModel(taskTopic: "Spiderman 8", state: false),
-      taskModel(taskTopic: "Spiderman 9", state: true),
-      taskModel(taskTopic: "Spiderman 10", state: true),
-      taskModel(taskTopic: "Spiderman 11", state: true),
-      taskModel(taskTopic: "Spiderman 12", state: true),
-      taskModel(taskTopic: "Spiderman 13", state: true),
-      taskModel(taskTopic: "Spiderman 14", state: true),
-      taskModel(taskTopic: "Spiderman 15 es una pelicula rara", state: true),
-
-
-    ];
-    
-    // ToDo Crear simulador de base de datos
-
-    // ToDo Obtener los elementos de una base de datos
-
-    // ToDo Una vez obtenidos los elementos de la base de datos se debe de ordenar donde los false van en la parte baja
-
-
+  // It goes to write a task in the instant tasks
+  void _goTo_write_tasks(taskModel task){
+    Navigator.of(context).popAndPushNamed('/write_task', arguments: task);
 
   }
 
-  // ToDo Crear ventanas para escritura de -> Lista , Solo ver y editar elemento
+
+  
+
+
+
+
+  List<taskModel> startDB(){
+    db_Instant_Task db = new db_Instant_Task();
+    return db.read_MyInstantTasks();
+  }
+
+
 
 
 

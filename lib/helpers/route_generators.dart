@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_to_do/Objects/task.dart';
+import 'package:my_to_do/Objects/taskList.dart';
 import 'package:my_to_do/pages/list_Lists.dart';
 import 'package:my_to_do/main.dart';
 import 'package:my_to_do/pages/write_element.dart';
+import 'package:my_to_do/pages/write_list.dart';
 
 
 
@@ -26,12 +29,15 @@ class RouteGenerator{
 
 
       case '/write_task':
-        return MaterialPageRoute(builder: (_)=>  Write_Task());     
+        return MaterialPageRoute(builder: (_) =>  Write_Task(task: args as taskModel));     
+      
+      case '/write_list':
+        return MaterialPageRoute(builder: (_) => write_List(listOfTasks: args as taskListModel));
 
         
          
 
-      // ToDo Crear página para errores
+     
       default:
         return MaterialPageRoute(builder: (_) => main_screen());
       

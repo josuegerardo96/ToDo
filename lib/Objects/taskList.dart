@@ -15,13 +15,11 @@ class taskListModel{
 
 
 
- String get getNameList => this.nameList;
-
- set setNameList(String nameList) => this.nameList = nameList;
+  String get getNameList => this.nameList;
+  set setNameList(String nameList) => this.nameList = nameList;
 
   get getListOfTasks => this.ListOfTasks;
-
- set setListOfTasks( ListOfTasks) => this.ListOfTasks = ListOfTasks;
+  set setListOfTasks( ListOfTasks) => this.ListOfTasks = ListOfTasks;
 
 
   
