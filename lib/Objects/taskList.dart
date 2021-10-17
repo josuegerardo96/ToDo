@@ -19,6 +19,7 @@ class taskListModel{
   set setNameList(String nameList) => this.nameList = nameList;
 
   get getListOfTasks => this.ListOfTasks;
+  get sizeListOfTasks => this.ListOfTasks.length;
   set setListOfTasks( ListOfTasks) => this.ListOfTasks = ListOfTasks;
 
 
