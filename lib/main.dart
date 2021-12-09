@@ -129,6 +129,7 @@ class _main_screenState extends State<main_screen> {
 
   // It goes to the list of lists
   void _goTo_list_of_lists(BuildContext context) {
+    
     Navigator.popAndPushNamed(context, "/list_lists");
   }
 

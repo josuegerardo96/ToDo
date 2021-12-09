@@ -15,16 +15,15 @@ class taskListModel{
 
 
 
-  String get getNameList => this.nameList;
+  get getNameList => this.nameList;
   set setNameList(String nameList) => this.nameList = nameList;
 
   get getListOfTasks => this.ListOfTasks;
-  get sizeListOfTasks => this.ListOfTasks.length;
   set setListOfTasks( ListOfTasks) => this.ListOfTasks = ListOfTasks;
 
+  get sizeListOfTasks => this.ListOfTasks.length;
 
-  
-
+  get allDoneInList => this.ListOfTasks.where((e) => e.getState==false).length;
 
 
 }
