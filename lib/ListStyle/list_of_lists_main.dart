@@ -51,71 +51,77 @@ class _taskListStyleState extends State<taskListStyl> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
-      width: 160.0,
+    return GestureDetector(
 
-
-      child: Card(
-
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        color: my_Colors.background_color_task,
-        child: Padding(
-          padding: EdgeInsets.all(15.0),
-          child: Column(
-
-            children: <Widget>[
-
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  widget.taskList.getNameList,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: GoogleFonts.roboto(
-                          fontSize: 16.0,
-                          color: Color(0xff202B57),
-                          textStyle: TextStyle(fontWeight: FontWeight.bold),
-                          
-                  ),
-                  
-                ),
-              ),
-
-              SizedBox(height: 10.0),
-
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  widget.contador.toString(),
-                  style: GoogleFonts.roboto(
-                    fontSize: 12.0,
-                    color: my_Colors.tex_color_grey,
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 8,),
-
-
-
-              Align(
-                alignment: Alignment.bottomRight,
-                child: circle_percent(widget.taskList.allDoneInList/widget.taskList.sizeListOfTasks, 30, 9.0),
-              )
-
-
-
-            ],
-
-
-
-          ),
-
-
-
-        ),
+      onTap: (){
+        Navigator.of(context).pushNamed("/tasks_in_list", arguments: widget.taskList);
+      },
+      child: Container(
         
+        width: 160.0,
+    
+    
+        child: Card(
+    
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          color: my_Colors.background_color_task,
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: Column(
+    
+              children: <Widget>[
+    
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    widget.taskList.getNameList,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: GoogleFonts.roboto(
+                            fontSize: 16.0,
+                            color: Color(0xff202B57),
+                            textStyle: TextStyle(fontWeight: FontWeight.bold),
+                            
+                    ),
+                    
+                  ),
+                ),
+    
+                SizedBox(height: 10.0),
+    
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    widget.contador.toString(),
+                    style: GoogleFonts.roboto(
+                      fontSize: 12.0,
+                      color: my_Colors.tex_color_grey,
+                    ),
+                  ),
+                ),
+    
+                SizedBox(height: 8,),
+    
+    
+    
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: circle_percent(widget.taskList.allDoneInList/widget.taskList.sizeListOfTasks, 30, 9.0),
+                )
+    
+    
+    
+              ],
+    
+    
+    
+            ),
+    
+    
+    
+          ),
+          
+        ),
       ),
     );
   }

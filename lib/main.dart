@@ -62,7 +62,7 @@ class _main_screenState extends State<main_screen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               title(),
-              line_text("Lists", "0 lists"),
+              line_text("Lists of lists", MytaskListList.length.toString()+" lists"),
 
               // LIST OF LISTS
               Padding(
@@ -108,7 +108,7 @@ class _main_screenState extends State<main_screen> {
           IconButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("All done tasks removed"),
+                  content: Text("All done tasks have been removed"),
                   duration: const Duration(seconds: 3),
                 ));
 
@@ -118,7 +118,7 @@ class _main_screenState extends State<main_screen> {
               },
               icon: Icon(Icons.delete, color: my_Colors.text_color_main)),
 
-          // ToDo Pantalla para crear listas
+
           IconButton(
               onPressed: () => {_goTo_list_of_lists(context)},
               icon: Icon(Icons.list, color: my_Colors.text_color_main)),
@@ -126,6 +126,8 @@ class _main_screenState extends State<main_screen> {
       ),
     );
   }
+
+
 
   // It goes to the list of lists
   void _goTo_list_of_lists(BuildContext context) {

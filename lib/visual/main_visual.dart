@@ -14,9 +14,6 @@ import 'package:my_to_do/helpers/my_style.dart';
 // Empty space in the screen of list of lists
 
 
-
-
-
 // MAIN TITLE OF THE MAIN SCREEN
 class title extends StatelessWidget{
   @override
@@ -54,8 +51,6 @@ class line_text extends StatelessWidget{
   String text;
   String count_text;
   line_text(this.text, this.count_text);
-
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -88,9 +83,6 @@ class line_text extends StatelessWidget{
 
   }
 }
-
-
-
 
 // Card shown when there is any list created
 class no_lists extends StatelessWidget{
@@ -156,12 +148,7 @@ class no_lists extends StatelessWidget{
                                             )
                                           ),
                                       )
-                                              
-                                              
-                                              
-                                              
-                                              
-                                              
+                                           
                                               
                                     ]
                                   ),
@@ -177,9 +164,6 @@ class no_lists extends StatelessWidget{
                     );
   }
 }
-
-
-
 
 // Card that shows there's nothing in the instant tasks
 class no_instant_tasks extends StatelessWidget{
@@ -253,8 +237,6 @@ class no_instant_tasks extends StatelessWidget{
     );
   }
 }
-
-
 
 
 // Empty space in the screen of list of lists

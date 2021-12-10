@@ -22,9 +22,6 @@ class create_list_of_lists extends StatelessWidget {
         taskListModel list = myLists[index];
         return list_of_lists_Style(list, index);
       },
-
-
-
     );
   }
 }
