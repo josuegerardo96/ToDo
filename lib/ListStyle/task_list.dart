@@ -23,18 +23,8 @@ class taskListStyle extends StatefulWidget {
 // This class create the bar with text and the list
 class _taskListStyleState extends State<taskListStyle> with SingleTickerProviderStateMixin{
   final contadorStream = new StreamController<int>();
-  final _controller = ScrollController();
+  final listKey = GlobalKey<AnimatedListState>();
 
-  late AnimationController controladorAnimacion;
-  late Animation<double> opacidad;
-
-
-  @override
-  void initState() {
-    controladorAnimacion = new AnimationController(vsync: this, duration: Duration(milliseconds: 2000, ));
-    opacidad = new Tween(begin: 1.0, end: 0.5).animate(controladorAnimacion);
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -61,13 +51,11 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
       ),
       SizedBox(height: 15.0),
       Expanded(
-        child: ListView.builder(
-          controller: _controller,
-          itemCount: widget._tasks.length,
-          itemBuilder: (context, index) {
-            taskModel task = widget._tasks[index];
-            
-            return taskStyle(this.context, task, index, contadorStream);
+        child: AnimatedList(
+          key: listKey,
+          initialItemCount: widget._tasks.length,
+          itemBuilder: (context, index, animation) {
+            return taskStyle(this.context, widget._tasks[index], index, contadorStream, animation);
           },
         ),
       ),
@@ -75,13 +63,13 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
   }
 
   // Give a task for being create
-  FadeTransition taskStyle(BuildContext context, 
+  SizeTransition taskStyle(BuildContext context, 
                       taskModel task, 
                       int index, 
-                      StreamController contadorStream ){
+                      StreamController contadorStream, Animation<double> animation ){
 
-      return new FadeTransition(
-        opacity: opacidad,
+      return SizeTransition(
+        sizeFactor: animation,
         child: Padding(
           padding: EdgeInsets.only(left: 10.0, top: 10.0),
           child: Row(
@@ -95,28 +83,18 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
                     if (task.state == true) {
                       contador++;
                       task.state = false;
-                      controladorAnimacion.forward(from: 1.0);
-
-                      // Se encarga de reordernar la lista de widgets
-                      // widget._tasks.sort((a,b){
-                      //     if(a.getState == true){
-                      //       return -1;
-                      //     }else{
-                      //       return 1;
-                      //     }
-                      //   }
-                      // );
-
+                      done_and_down(index);
                   
                     // Check as UNDONe
                     } else {
                       contador--;
                       task.state = true;
+                      undown_and_up(index);
                       
                       
                     }
                   });
-
+      
                   contadorStream.sink.add(contador);
           
                   //db_Instant_Task().updateState_MyInstantTasks(widget.index);
@@ -179,6 +157,35 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
         ),
       );
     
+  }
+
+
+
+  void done_and_down(int i){
+    taskModel taskk = widget._tasks[i];
+    widget._tasks.removeAt(i);
+    listKey.currentState!.removeItem(
+      i, (context, animation) => 
+      taskStyle(context, taskk, i, contadorStream, animation),
+      duration: Duration(milliseconds: 500));
+    
+    final newIndex = widget._tasks.length;
+    widget._tasks.insert(newIndex, taskk);
+    listKey.currentState!.insertItem(newIndex, duration: Duration(milliseconds: 500));
+
+  }
+
+  void undown_and_up(int i){
+    taskModel taskk = widget._tasks[i];
+    widget._tasks.removeAt(i);
+    listKey.currentState!.removeItem(
+      i, (context, animation) => 
+      taskStyle(context, taskk, i, contadorStream, animation),
+      duration: Duration(milliseconds: 500));
+
+    widget._tasks.insert(0, taskk);
+    listKey.currentState!.insertItem(0, duration: Duration(milliseconds: 500));
+
   }
 
 

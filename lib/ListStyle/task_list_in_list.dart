@@ -22,12 +22,10 @@ class taskListStyleInList extends StatefulWidget {
 
 
 
-
-
-
 class _taskListStyleInListState extends State<taskListStyleInList> {
 
   final contadorStream = new StreamController<int>();
+  final listKey = GlobalKey<AnimatedListState>();
   
 
 
@@ -138,118 +136,253 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
       
       // It's where the tasks are created
       Expanded(
-        child: ListView.builder(
-          itemCount: widget._tasks.length,
-          itemBuilder: (context, index) {
+        child: AnimatedList(
+          key: listKey,
+          initialItemCount: widget._tasks.length,
+          itemBuilder: (context, index, animation) {
             taskModel task = widget._tasks[index];
             
-            return taskStyle(task, index, contadorStream);
+            return taskStyle(context, task, index, contadorStream, animation);
           },
         ),
       ),
     ]);
   }
-}
-
-// Give a task for being create
-class taskStyle extends StatefulWidget {
-  final taskModel _task;
-  final int index;
-  final StreamController<int> contadorStream;
-  taskStyle(this._task, this.index, this.contadorStream);
-
-  @override
-  State<taskStyle> createState() => _taskStyleState();
-}
 
 
 
+  SizeTransition taskStyle(BuildContext context, 
+                      taskModel task, 
+                      int index, 
+                      StreamController contadorStream, Animation<double> animation ){
 
-// Draw every task in a stateful element
-class _taskStyleState extends State<taskStyle> {
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      child: Padding(
-        padding: EdgeInsets.only(left: 10.0, top: 10.0),
-        child: Row(
-          children: <Widget>[
-            // Button for check the state of the task
-            new GestureDetector(
-              onTap: () {
-                setState(() {
-                  // Changes the state of the task
-
-                  if (widget._task.state == true) {
-                    contador++;
-                    widget._task.state = false;
-                  } else {
-                    contador--;
-                    widget._task.state = true;
-                  }
-                });
-
-                widget.contadorStream.sink.add(contador);
-
-                // IMPROVE crear función correcta de cómo se tiene que comportar el cambio de estado de esta vara
-                //db_Instant_Task().updateState_MyInstantTasks(widget.index);
-              },
-              child: widget._task.state
-                  ? Image(
-                      image: AssetImage('assets/circle.png'),
-                      height: 25,
-                      width: 25,
-                    )
-                  : Image(
-                      image: AssetImage('assets/circle-check.png'),
-                      height: 25,
-                      width: 25,
-                    ),
-            ),
-
-            SizedBox(
-              width: 10.0,
-            ),
-
-            // El apartado del texto
-            Expanded(
-              child: new GestureDetector(
+      return SizeTransition(
+        sizeFactor: animation,
+        child: Padding(
+          padding: EdgeInsets.only(left: 10.0, top: 10.0),
+          child: Row(
+            children: <Widget>[
+              // Button for check the state of the task
+              new GestureDetector(
                 onTap: () {
-                  widget._task.setState = true;
-                  Navigator.of(context)
-                      .pushNamed('/write_task', arguments: widget._task);
+                  setState(() {
+                    
+                  
+                    if (task.state == true) {
+                      contador++;
+                      task.state = false;
+                      done_and_down(index);
+                  
+                    // Check as UNDONe
+                    } else {
+                      contador--;
+                      task.state = true;
+                      undown_and_up(index);
+                      
+                      
+                    }
+                  });
+      
+                  contadorStream.sink.add(contador);
+          
+                  //db_Instant_Task().updateState_MyInstantTasks(widget.index);
                 },
-                child: Expanded(
-                  child: Container(
-                    decoration: new BoxDecoration(
-                        color: my_Colors.background_color_task,
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10.0),
-                            topLeft: Radius.circular(10.0))),
-
-                    // TEXT
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 10.0),
-                      child: Text(
-                        widget._task.taskTopic,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
-                            fontSize: 14.0,
-                            color: Color(0xff202B57),
-                            textStyle: widget._task.state
-                                ? TextStyle(decoration: TextDecoration.none)
-                                : TextStyle(
-                                    decoration: TextDecoration.lineThrough)),
+                child: task.state
+                    ? Image(
+                        image: AssetImage('assets/circle.png'),
+                        height: 25,
+                        width: 25,
+                      )
+                    : Image(
+                        image: AssetImage('assets/circle-check.png'),
+                        height: 25,
+                        width: 25,
+                      ),
+              ),
+          
+              SizedBox(
+                width: 10.0,
+              ),
+          
+              // El apartado del texto
+              Expanded(
+                child: new GestureDetector(
+                  onTap: () {
+                    task.setState = true;
+                    Navigator.of(context)
+                        .pushNamed('/write_task', arguments: task);
+                  },
+                  child: Expanded(
+                    child: Container(
+                      decoration: new BoxDecoration(
+                          color: my_Colors.background_color_task,
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10.0),
+                              topLeft: Radius.circular(10.0))),
+          
+                      // TEXT
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 10.0),
+                        child: Text(
+                          task.taskTopic,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.roboto(
+                              fontSize: 14.0,
+                              color: Color(0xff202B57),
+                              textStyle: task.state
+                                  ? TextStyle(decoration: TextDecoration.none)
+                                  : TextStyle(
+                                      decoration: TextDecoration.lineThrough)),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    
   }
+
+
+
+  void done_and_down(int i){
+    taskModel taskk = widget._tasks[i];
+    widget._tasks.removeAt(i);
+    listKey.currentState!.removeItem(
+      i, (context, animation) => 
+      taskStyle(context, taskk, i, contadorStream, animation),
+      duration: Duration(milliseconds: 500));
+    
+    final newIndex = widget._tasks.length;
+    widget._tasks.insert(newIndex, taskk);
+    listKey.currentState!.insertItem(newIndex, duration: Duration(milliseconds: 500));
+
+  }
+
+  void undown_and_up(int i){
+    taskModel taskk = widget._tasks[i];
+    widget._tasks.removeAt(i);
+    listKey.currentState!.removeItem(
+      i, (context, animation) => 
+      taskStyle(context, taskk, i, contadorStream, animation),
+      duration: Duration(milliseconds: 500));
+
+    widget._tasks.insert(0, taskk);
+    listKey.currentState!.insertItem(0, duration: Duration(milliseconds: 500));
+
+  }
+
+
+
+
+
+
+
 }
+
+// // Give a task for being create
+// class taskStyle extends StatefulWidget {
+//   final taskModel _task;
+//   final int index;
+//   final StreamController<int> contadorStream;
+//   taskStyle(this._task, this.index, this.contadorStream);
+
+//   @override
+//   State<taskStyle> createState() => _taskStyleState();
+// }
+
+
+
+
+// // Draw every task in a stateful element
+// class _taskStyleState extends State<taskStyle> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return new Container(
+//       child: Padding(
+//         padding: EdgeInsets.only(left: 10.0, top: 10.0),
+//         child: Row(
+//           children: <Widget>[
+//             // Button for check the state of the task
+//             new GestureDetector(
+//               onTap: () {
+//                 setState(() {
+//                   // Changes the state of the task
+
+//                   if (widget._task.state == true) {
+//                     contador++;
+//                     widget._task.state = false;
+//                   } else {
+//                     contador--;
+//                     widget._task.state = true;
+//                   }
+//                 });
+
+//                 widget.contadorStream.sink.add(contador);
+
+//                 // IMPROVE crear función correcta de cómo se tiene que comportar el cambio de estado de esta vara
+//                 //db_Instant_Task().updateState_MyInstantTasks(widget.index);
+//               },
+//               child: widget._task.state
+//                   ? Image(
+//                       image: AssetImage('assets/circle.png'),
+//                       height: 25,
+//                       width: 25,
+//                     )
+//                   : Image(
+//                       image: AssetImage('assets/circle-check.png'),
+//                       height: 25,
+//                       width: 25,
+//                     ),
+//             ),
+
+//             SizedBox(
+//               width: 10.0,
+//             ),
+
+//             // El apartado del texto
+//             Expanded(
+//               child: new GestureDetector(
+//                 onTap: () {
+//                   widget._task.setState = true;
+//                   Navigator.of(context)
+//                       .pushNamed('/write_task', arguments: widget._task);
+//                 },
+//                 child: Expanded(
+//                   child: Container(
+//                     decoration: new BoxDecoration(
+//                         color: my_Colors.background_color_task,
+//                         borderRadius: BorderRadius.only(
+//                             bottomLeft: Radius.circular(10.0),
+//                             topLeft: Radius.circular(10.0))),
+
+//                     // TEXT
+//                     child: Padding(
+//                       padding: EdgeInsets.symmetric(
+//                           vertical: 15.0, horizontal: 10.0),
+//                       child: Text(
+//                         widget._task.taskTopic,
+//                         overflow: TextOverflow.ellipsis,
+//                         style: GoogleFonts.roboto(
+//                             fontSize: 14.0,
+//                             color: Color(0xff202B57),
+//                             textStyle: widget._task.state
+//                                 ? TextStyle(decoration: TextDecoration.none)
+//                                 : TextStyle(
+//                                     decoration: TextDecoration.lineThrough)),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//}
