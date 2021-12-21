@@ -11,6 +11,7 @@ import 'package:my_to_do/Objects/taskList.dart';
 import 'package:my_to_do/helpers/colorss.dart';
 import 'package:my_to_do/helpers/route_generators.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
+import 'package:my_to_do/pages/write_task.dart';
 import 'helpers/titles.dart';
 import 'helpers/empty_spaces.dart';
 
@@ -21,7 +22,7 @@ void main() {
     onGenerateRoute: RouteGenerator.generateRoute, // In the file "route_generates" are all the routes used in the app
   ));
 }
-
+//Expanded
 
 //------------------------------------------
 // this file has:
@@ -109,10 +110,11 @@ class _main_screenState extends State<main_screen> {
         children: <Widget>[
           IconButton(
               onPressed: () =>
-                  //{_goTo_write_tasks(taskModel(taskTopic: "", state: false))},
                   {
-                    Navigator.of(context).popAndPushNamed('/write_task',
-                        arguments: taskModel(taskTopic: "", state: false))
+                    Navigator.of(context).pushNamed('/write_task',
+                        arguments: taskModel(taskTopic: "", state: false)).then((value){setState(() {
+                          // ToDo actualizar la base de datos
+                        });})
                   },
               icon: Icon(
                 Icons.edit,
@@ -132,7 +134,7 @@ class _main_screenState extends State<main_screen> {
               icon: Icon(Icons.delete, color: my_Colors.text_color_main)),
           IconButton(
               onPressed: () =>
-                  {Navigator.popAndPushNamed(context, "/list_lists")},
+                  {Navigator.pushNamed(context, "/list_lists")},
               icon: Icon(Icons.list, color: my_Colors.text_color_main)),
         ],
       ),
@@ -157,7 +159,6 @@ class taskListStyle extends StatefulWidget {
   State<taskListStyle> createState() => _taskListStyleState();
 }
 
-// This class create the bar with text and the list
 class _taskListStyleState extends State<taskListStyle> with SingleTickerProviderStateMixin{
   final contadorStream = new StreamController<int>();
   final listKey = GlobalKey<AnimatedListState>();
@@ -259,31 +260,33 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
                   onTap: () {
                     task.setState = true;
                     Navigator.of(context)
-                        .pushNamed('/write_task', arguments: task);
+                        .pushNamed('/write_task', arguments: Write_Task(task: task)).then((value){setState(() {
+                          //ToDo actualizar la base de datos
+
+
+                        });});
                   },
-                  child: Expanded(
-                    child: Container(
-                      decoration: new BoxDecoration(
-                          color: my_Colors.background_color_task,
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10.0),
-                              topLeft: Radius.circular(10.0))),
+                  child: Container(
+                    decoration: new BoxDecoration(
+                        color: my_Colors.background_color_task,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10.0),
+                            topLeft: Radius.circular(10.0))),
           
-                      // TEXT
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 10.0),
-                        child: Text(
-                          task.taskTopic,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.roboto(
-                              fontSize: 14.0,
-                              color: Color(0xff202B57),
-                              textStyle: task.state
-                                  ? TextStyle(decoration: TextDecoration.none)
-                                  : TextStyle(
-                                      decoration: TextDecoration.lineThrough)),
-                        ),
+                    // TEXT
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 10.0),
+                      child: Text(
+                        task.taskTopic,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.roboto(
+                            fontSize: 14.0,
+                            color: Color(0xff202B57),
+                            textStyle: task.state
+                                ? TextStyle(decoration: TextDecoration.none)
+                                : TextStyle(
+                                    decoration: TextDecoration.lineThrough)),
                       ),
                     ),
                   ),
@@ -358,7 +361,6 @@ class every_taskList_in_main extends StatelessWidget {
   }
 }
 
-
 class everyTaskListInMain extends StatefulWidget {
   final taskListModel taskList;
   int index;
@@ -377,7 +379,9 @@ class _everyTaskListInMaineState extends State<everyTaskListInMain> {
     return GestureDetector(
 
       onTap: (){
-        Navigator.of(context).pushNamed("/tasks_in_list", arguments: widget.taskList);
+        Navigator.of(context).pushNamed("/tasks_in_list", arguments: widget.taskList).then((value){setState(() {
+          // ToDo actualizar la lista con los cambios realizados
+        });});
       },
       child: Container(
         

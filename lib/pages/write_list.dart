@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, must_be_immutable
+// ignore_for_file: camel_case_types, must_be_immutable, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:my_to_do/Objects/taskList.dart';
@@ -6,23 +6,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:my_to_do/helpers/colorss.dart';
 
 
-
 class write_List extends StatefulWidget {
 
   taskListModel listOfTasks;
-  write_List({Key? key, required this.listOfTasks}) : super(key: key);
+  write_List({required this.listOfTasks});
 
   @override
   _write_ListState createState() => _write_ListState();
 }
-
+// Expanded
 
 
 
 class _write_ListState extends State<write_List> {
   TextEditingController myController = new TextEditingController();
   bool editado = false;
-
   bool escribirNuevo = false;
 
 
@@ -41,92 +39,105 @@ class _write_ListState extends State<write_List> {
   originalText == "" ? escribirNuevo = false : escribirNuevo = true;
   
 
-  return Scaffold(
-        
-
-        body: SafeArea(
-          child: Expanded(
+  return WillPopScope(
+    onWillPop: () async {
+      Navigator.of(context).pop();
+      return true;
+    },
+    child: Scaffold(
+          
+  
+          body: SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-          
+            
                 Padding(
                   padding: EdgeInsets.all(30.0),
                   child: TextField(
+                    
                     controller: myController,
                     onChanged: (text){
                       setState(() {
-    
+      
                         originalText == text ? editado = false : editado = true;
-
+  
                       });
                     },
                     // is it new? yes: don't focus --- no: focus
                     autofocus: escribirNuevo ? false : true, 
-
+  
                     maxLength: 60,
-
+  
                     
-        
+          
                     style: GoogleFonts.roboto(
                       color: my_Colors.text_color_main,
                       fontSize: 18
                     ),
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      
+                      counterText: "",
                     ),
                     keyboardType: TextInputType.multiline,
                     minLines: 1,
                     maxLines: 6,
                 
                   ),
+                ),
+
+                SizedBox(height: 15,),
+
+
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    myController.text.length.toString()+"/60",
+                    style: GoogleFonts.roboto(
+                        color: my_Colors.tex_color_grey,
+                        fontSize: 12
+                      ),
+                
+                  ),
                 )
               ],
             ),
           ),
-        ),
-
-
-        
-        floatingActionButton: FloatingActionButton.extended(
-
+  
+  
           
-          onPressed: (){
+          floatingActionButton: FloatingActionButton.extended(
+  
             
-            if(editado && myController.text.isNotEmpty){
+            onPressed: (){
               
-              // ToDo Agregar función de cambio en la base de datos
-
-
-              // ToDo Arreglar problema de Index del problema en cuestión
-
-
-              widget.listOfTasks.setNameList = myController.text.trim();
-              backTo_listOfLists(context);
-
-            }else if(myController.text.isEmpty || editado==false){
-              backTo_listOfLists(context);
-            }
+              if(editado && myController.text.isNotEmpty){  
+                widget.listOfTasks.setNameList = myController.text.trim();
+                backTo_listOfLists(context);
+  
+              }else if(myController.text.isEmpty || editado==false){
+                backTo_listOfLists(context);
+              }
+              
+            },
+  
+            label: Text("Add list"),
+            icon: Icon( editado ? Icons.edit : Icons.keyboard_arrow_up, color: my_Colors.background_color_white),
+            backgroundColor: my_Colors.background_color_blue,
             
-          },
-
-          label: Text("Add list"),
-          icon: Icon( editado ? Icons.edit : Icons.keyboard_arrow_up, color: my_Colors.background_color_white),
-          backgroundColor: my_Colors.background_color_blue,
-          
-
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        
-      );
+  );
     
     }
 }
 
 
 void backTo_listOfLists(BuildContext context) {
-    Navigator.popAndPushNamed(context, "/list_lists");
+    Navigator.of(context).pop();
 }

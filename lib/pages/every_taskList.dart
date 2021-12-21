@@ -34,72 +34,83 @@ class _every_taskListState extends State<every_taskList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-          child: Container(
-        color: my_Colors.background_color_white,
-        child: Column(
+    return WillPopScope(
+      onWillPop: () async{
+        Navigator.of(context).pop();
+        return true;
+
+      },
+      child: Scaffold(
+        body: SafeArea(
+            child: Container(
+          color: my_Colors.background_color_white,
+          child: Column(
+            children: <Widget>[
+              // TITLE
+              new GestureDetector(
+                  onTap: () {
+                    Navigator.popAndPushNamed(context, "/");
+                  },
+                  child: title()),
+    
+              // COUNT THE LISTS
+              line_text("Lists", myLists.length.toString() + " lists"),
+    
+              SizedBox(height: 20.0),
+              
+              // SHOW EVERY-TASKLIST
+              Expanded(
+                  child: myLists.length > 0
+                      ? ListView.builder(
+                          itemCount: myLists.length,
+                          itemBuilder: (context, index) {
+                            taskListModel list = myLists[index];
+                            return every_taskList_Style(list, index, context);},)
+                      : NoLists()),
+            ],
+          ),
+        )),
+    
+    
+        // FAB Button
+        floatingActionButton: FabCircularMenu(
+          fabOpenIcon: Icon(Icons.add, color: my_Colors.background_color_white),
+          fabCloseIcon:
+              Icon(Icons.close, color: my_Colors.background_color_white),
+          ringColor: Colors.transparent,
+          fabMargin: EdgeInsets.all(20.0),
+          ringWidth: MediaQuery.of(context).size.width * 0.9,
           children: <Widget>[
-            // TITLE
-            new GestureDetector(
-                onTap: () {
-                  Navigator.popAndPushNamed(context, "/");
+            // Create a new List
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "/write_list",
+                      arguments: taskListModel(nameList: "", ListOfTasks: [])).then((value){setState(() {
+                        // ToDo actualizar la lista con los cambios que se hayan hecho
+
+
+                      });});
                 },
-                child: title()),
-
-            // COUNT THE LISTS
-            line_text("Lists", myLists.length.toString() + " lists"),
-
-            SizedBox(height: 20.0),
-            
-            // SHOW EVERY-TASKLIST
-            Expanded(
-                child: myLists.length > 0
-                    ? ListView.builder(
-                        itemCount: myLists.length,
-                        itemBuilder: (context, index) {
-                          taskListModel list = myLists[index];
-                          return every_taskList_Style(list, index, context);},)
-                    : NoLists()),
+                icon: Icon(
+                  Icons.add,
+                  color: my_Colors.text_color_main,
+                )),
+    
+            // Delete all lists completes
+            IconButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("All list completed removed"),
+                    duration: const Duration(seconds: 3),
+                  ));
+    
+                  setState(() {
+                    myLists.removeWhere((e) => e.allDoneInList == 0);
+                  });
+                },
+                icon: Icon(Icons.delete, color: my_Colors.text_color_main)),
           ],
         ),
-      )),
-
-
-      // FAB Button
-      floatingActionButton: FabCircularMenu(
-        fabOpenIcon: Icon(Icons.add, color: my_Colors.background_color_white),
-        fabCloseIcon:
-            Icon(Icons.close, color: my_Colors.background_color_white),
-        ringColor: Colors.transparent,
-        fabMargin: EdgeInsets.all(20.0),
-        ringWidth: MediaQuery.of(context).size.width * 0.9,
-        children: <Widget>[
-          // Create a new List
-          IconButton(
-              onPressed: () {
-                Navigator.popAndPushNamed(context, "/write_list",
-                    arguments: taskListModel(nameList: "", ListOfTasks: []));
-              },
-              icon: Icon(
-                Icons.add,
-                color: my_Colors.text_color_main,
-              )),
-
-          // Delete all lists completes
-          IconButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("All list completed removed"),
-                  duration: const Duration(seconds: 3),
-                ));
-
-                setState(() {
-                  myLists.removeWhere((e) => e.allDoneInList == 0);
-                });
-              },
-              icon: Icon(Icons.delete, color: my_Colors.text_color_main)),
-        ],
       ),
     );
   }
