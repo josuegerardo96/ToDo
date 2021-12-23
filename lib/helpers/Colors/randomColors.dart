@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 class R_Colors {
   static Color light_blue = Color(0xff33B5FF);
   static Color green = Color(0xff31C190);
-  static Color yellow = Color(0xffFDD324);
+  static Color yellow = Color(0xffFFC300);
   static Color red = Color(0xffFF1700);
   static Color brown = Color(0xffD06224);
   static Color pink = Color(0xffF9C5D5);
