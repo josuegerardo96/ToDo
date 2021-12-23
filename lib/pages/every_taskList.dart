@@ -7,7 +7,7 @@ import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
 import 'package:my_to_do/helpers/empty_spaces.dart';
-import 'package:my_to_do/helpers/colorss.dart';
+import 'package:my_to_do/helpers/Colors/colorss.dart';
 import 'package:my_to_do/DB/db_list_tasks.dart';
 import 'package:my_to_do/helpers/titles.dart';
 
@@ -21,7 +21,7 @@ class every_taskList extends StatefulWidget {
 class _every_taskListState extends State<every_taskList> {
 
   // Fill every-List of tasks
-  List<taskListModel> myLists = [];
+  List<TaskList> myLists = [];
 
   // Start every-List of tasks
   @override
@@ -64,7 +64,7 @@ class _every_taskListState extends State<every_taskList> {
                       ? ListView.builder(
                           itemCount: myLists.length,
                           itemBuilder: (context, index) {
-                            taskListModel list = myLists[index];
+                            TaskList list = myLists[index];
                             return every_taskList_Style(list, index, context);},)
                       : NoLists()),
             ],
@@ -85,7 +85,7 @@ class _every_taskListState extends State<every_taskList> {
             IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, "/write_list",
-                      arguments: taskListModel(nameList: "", ListOfTasks: [])).then((value){setState(() {
+                      arguments: TaskList(nameList: "", ListOfTasks: [])).then((value){setState(() {
                         // ToDo actualizar la lista con los cambios que se hayan hecho
 
 
@@ -122,8 +122,8 @@ class _every_taskListState extends State<every_taskList> {
 //-------------------------------
 // VISUAL: CREATE EVERY TASKLIST
 //-------------------------------
-Container every_taskList_Style(taskListModel myLists, int index, BuildContext context){
-  List<taskModel> lista = myLists.ListOfTasks;
+Container every_taskList_Style(TaskList myLists, int index, BuildContext context){
+  List<Task> lista = myLists.ListOfTasks;
   int allDone = lista.where((e) => e.getState == false).length;
 
   return Container(

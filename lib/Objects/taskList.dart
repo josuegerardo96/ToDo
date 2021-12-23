@@ -4,14 +4,14 @@ import 'package:my_to_do/Objects/task.dart';
 
 // Save a new list 
 
-class taskListModel{
+class TaskList{
 
   String nameList;
-  List<taskModel> ListOfTasks;
+  List<Task> ListOfTasks;
 
 
 
-  taskListModel({required this.nameList, required this.ListOfTasks});
+  TaskList({required this.nameList, required this.ListOfTasks});
 
 
 

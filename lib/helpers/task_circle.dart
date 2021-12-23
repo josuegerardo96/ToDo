@@ -14,7 +14,7 @@ Widget circle_percent(double percent, double hw, double fs){
             width:hw,
             height: hw,
             child: new CircularProgressIndicator(
-              strokeWidth: 5,
+              strokeWidth: 4,
               value: percent,
               color: Color(0xff06D6A0),
             ),
@@ -24,7 +24,41 @@ Widget circle_percent(double percent, double hw, double fs){
               (percent * 100).toInt().toString()+"%",
               style: GoogleFonts.roboto(
                 fontSize: fs,
-                color: Color(0xff202B57),
+                color: Color(0xff06D6A0),
+
+              ) ,
+            ),
+        ],
+      ),
+
+    );
+}
+
+
+Widget Circle_Counter(double percent, double hw, double fs, Color color){
+
+
+  return Container(
+
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+
+          Container(
+            width:hw,
+            height: hw,
+            child: new CircularProgressIndicator(
+              strokeWidth: 4,
+              value: percent,
+              color: color,
+            ),
+          ),
+
+          Text(
+              (percent * 100).toInt().toString()+"%",
+              style: GoogleFonts.roboto(
+                fontSize: fs,
+                color: color,
 
               ) ,
             ),

@@ -4,12 +4,12 @@
 // FALSE means "done" 'cause it means that is a task anymore
 // TRUE means "still a task"
 
-class taskModel {
+class Task {
 
   String taskTopic;
   bool state;
  
-  taskModel({required this.taskTopic,required this.state});
+  Task({required this.taskTopic,required this.state});
 
 
   String get getTaskTopic => this.taskTopic;

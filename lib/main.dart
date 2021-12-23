@@ -8,10 +8,11 @@ import 'package:my_to_do/DB/db_instant_task.dart';
 import 'package:my_to_do/DB/db_list_tasks.dart';
 import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
-import 'package:my_to_do/helpers/colorss.dart';
+import 'package:my_to_do/helpers/Colors/colorss.dart';
+import 'package:my_to_do/helpers/Colors/randomColors.dart';
+import 'package:my_to_do/helpers/Texts/title.dart';
 import 'package:my_to_do/helpers/route_generators.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
-import 'package:my_to_do/pages/write_task.dart';
 import 'helpers/titles.dart';
 import 'helpers/empty_spaces.dart';
 
@@ -22,7 +23,7 @@ void main() {
     onGenerateRoute: RouteGenerator.generateRoute, // In the file "route_generates" are all the routes used in the app
   ));
 }
-//Expanded
+
 
 //------------------------------------------
 // this file has:
@@ -39,8 +40,9 @@ class _main_screenState extends State<main_screen> {
 
 
   // Fill the list with the tasks and lists of DB
-  List<taskModel> MyinstantTasksList = [];
-  List<taskListModel> MytaskListList = [];
+  List<Task> MyinstantTasksList = [];
+  List<TaskList> MytaskListList = [];
+  
 
 
   // Start to fill the lists
@@ -49,6 +51,7 @@ class _main_screenState extends State<main_screen> {
     super.initState();
     MyinstantTasksList = db_Instant_Task().read_MyInstantTasks();
     MytaskListList = db_list_tasks().start_myListOfTasks();
+
   }
 
   
@@ -57,10 +60,16 @@ class _main_screenState extends State<main_screen> {
   Widget build(BuildContext context) {
     // Change statusBar color
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: my_Colors.main_color));
+        SystemUiOverlayStyle(statusBarColor: my_Colors.black));
 
     // Create the Main screen's body
     return Scaffold(
+
+
+
+
+
+
       body: SafeArea(
         child: Container(
           color: my_Colors.background_color_white,
@@ -69,11 +78,22 @@ class _main_screenState extends State<main_screen> {
             // The full column will take all the space in the screen
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Main title
-              title(),
-              // Line of text
-              line_text("Lists of lists",
-                  MytaskListList.length.toString() + " lists"),
+
+              // Title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal:10, vertical: 30),
+                child: Row(
+                  children: [
+                    Expanded(child: Main_title()),
+                    IconButton(
+                      onPressed: (){}, 
+                      icon: Icon(Icons.more_vert, color: my_Colors.black,)
+                    ),
+                  ]
+                ),
+              ),
+
+
 
               // LIST OF LISTS
               Padding(
@@ -88,6 +108,7 @@ class _main_screenState extends State<main_screen> {
                   ],
                 ),
               ),
+
 
               // INSTANT TASKS
               Expanded(
@@ -112,7 +133,7 @@ class _main_screenState extends State<main_screen> {
               onPressed: () =>
                   {
                     Navigator.of(context).pushNamed('/write_task',
-                        arguments: taskModel(taskTopic: "", state: false)).then((value){setState(() {
+                        arguments: Task(taskTopic: "", state: false)).then((value){setState(() {
                           // ToDo actualizar la base de datos
                         });})
                   },
@@ -153,7 +174,7 @@ class _main_screenState extends State<main_screen> {
 int contador = 0;
 // This class return a FULL ListView of the instant tasks to the main screen
 class taskListStyle extends StatefulWidget {
-  List<taskModel> _tasks;
+  List<Task> _tasks;
   taskListStyle(this._tasks);
   @override
   State<taskListStyle> createState() => _taskListStyleState();
@@ -202,7 +223,7 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
 
   // Give a task for being create
   SizeTransition taskStyle(BuildContext context, 
-                      taskModel task, 
+                      Task task, 
                       int index, 
                       StreamController contadorStream, Animation<double> animation ){
 
@@ -260,7 +281,7 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
                   onTap: () {
                     task.setState = true;
                     Navigator.of(context)
-                        .pushNamed('/write_task', arguments: Write_Task(task: task)).then((value){setState(() {
+                        .pushNamed('/write_task', arguments: task).then((value){setState(() {
                           //ToDo actualizar la base de datos
 
 
@@ -302,7 +323,7 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
 
 
   void done_and_down(int i){
-    taskModel taskk = widget._tasks[i];
+    Task taskk = widget._tasks[i];
     widget._tasks.removeAt(i);
     listKey.currentState!.removeItem(
       i, (context, animation) => 
@@ -316,7 +337,7 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
   }
 
   void undown_and_up(int i){
-    taskModel taskk = widget._tasks[i];
+    Task taskk = widget._tasks[i];
     widget._tasks.removeAt(i);
     listKey.currentState!.removeItem(
       i, (context, animation) => 
@@ -338,12 +359,16 @@ class _taskListStyleState extends State<taskListStyle> with SingleTickerProvider
 // EVERY-TASKlIST
 //-------------------------------
 class every_taskList_in_main extends StatelessWidget {
+  
 
-   final List<taskListModel> ListOfLists;
+   final List<TaskList> ListOfLists;
    every_taskList_in_main(this.ListOfLists);
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return SizedBox(
       height: 120.0,
       child: ListView.builder(
@@ -351,7 +376,7 @@ class every_taskList_in_main extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemBuilder: (context, index){
-          taskListModel taskList = ListOfLists[index];
+          TaskList taskList = ListOfLists[index];
           return everyTaskListInMain(taskList, index, ListOfLists[index].sizeListOfTasks);
         },
     
@@ -362,7 +387,7 @@ class every_taskList_in_main extends StatelessWidget {
 }
 
 class everyTaskListInMain extends StatefulWidget {
-  final taskListModel taskList;
+  final TaskList taskList;
   int index;
   int contador;
   everyTaskListInMain(this.taskList, this.index, this.contador);
@@ -370,12 +395,15 @@ class everyTaskListInMain extends StatefulWidget {
   @override
   _everyTaskListInMaineState createState() => _everyTaskListInMaineState();
 }
-
 class _everyTaskListInMaineState extends State<everyTaskListInMain> {
 
 
+  
   @override
   Widget build(BuildContext context) {
+
+    Color selCol = R_Colors().listOfRColors()[widget.index % 10];
+    
     return GestureDetector(
 
       onTap: (){
@@ -385,56 +413,57 @@ class _everyTaskListInMaineState extends State<everyTaskListInMain> {
       },
       child: Container(
         
-        width: 160.0,
-    
-    
+        width: 150.0,
         child: Card(
-    
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          color: my_Colors.background_color_task,
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),
+            side: BorderSide(
+              color: my_Colors.light_grey,
+              width: 1,
+            )
+          ),
+
+
+          
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+
             child: Column(
-    
+              
               children: <Widget>[
-    
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    widget.taskList.getNameList,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: GoogleFonts.roboto(
-                            fontSize: 16.0,
-                            color: Color(0xff202B57),
-                            textStyle: TextStyle(fontWeight: FontWeight.bold),
-                            
-                    ),
-                    
+                
+
+                // List title
+                Container(
+                  width: double.infinity,
+                  height: 50,
+                  alignment: Alignment.centerLeft,
+                  child: little_text(widget.taskList.getNameList)),
+
+                Spacer(flex: 1,),
+
+                // Row of counter and Circle
+                Padding(
+                  padding: const EdgeInsets.only(left:15.0, right: 5),
+                  
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: counter_text(
+                            widget.contador.toString(), 
+                            widget.taskList.sizeListOfTasks.toString(), 
+                            10, 
+                            selCol),
+                        ),
+                      ),
+                      Circle_Counter(widget.taskList.allDoneInList/widget.taskList.sizeListOfTasks, 40, 10.0, selCol),
+                    ],
                   ),
-                ),
-    
-                SizedBox(height: 10.0),
-    
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    widget.contador.toString(),
-                    style: GoogleFonts.roboto(
-                      fontSize: 12.0,
-                      color: my_Colors.tex_color_grey,
-                    ),
-                  ),
-                ),
-    
-                SizedBox(height: 8,),
-    
-    
-    
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: circle_percent(widget.taskList.allDoneInList/widget.taskList.sizeListOfTasks, 30, 9.0),
                 )
+
     
     
     

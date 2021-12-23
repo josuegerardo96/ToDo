@@ -20,15 +20,15 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => every_taskList());
 
       case '/write_task':
-        return MaterialPageRoute(builder: (_) =>  Write_Task(task: args as taskModel));
+        return MaterialPageRoute(builder: (_) =>  Write_Task(task: args as Task));
 
       case '/write_list':
         return MaterialPageRoute(
-            builder: (_) => write_List(listOfTasks: args as taskListModel));
+            builder: (_) => write_List(listOfTasks: args as TaskList));
 
       case '/tasks_in_list':
         return MaterialPageRoute(
-            builder: (_) => tasksInOneList(args as taskListModel));
+            builder: (_) => tasksInOneList(args as TaskList));
 
       default:
         return MaterialPageRoute(builder: (_) => main_screen());

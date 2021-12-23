@@ -5,12 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
 import 'package:my_to_do/helpers/empty_spaces.dart';
-import 'package:my_to_do/helpers/colorss.dart';
+import 'package:my_to_do/helpers/Colors/colorss.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
 import 'package:my_to_do/pages/write_task.dart';
 
 class tasksInOneList extends StatefulWidget {
-  taskListModel oneTaskList;
+  TaskList oneTaskList;
   tasksInOneList(this.oneTaskList);
   @override
   _tasksInOneListState createState() => _tasksInOneListState();
@@ -43,7 +43,7 @@ class _tasksInOneListState extends State<tasksInOneList> {
           onPressed: () {
               Navigator.of(context)
                   .pushNamed('/write_task',
-                      arguments: taskModel(taskTopic: "", state: false))
+                      arguments: Task(taskTopic: "", state: false))
                   .then((value) {
                 setState(() {
                   // ToDo actualizar la base de datos
@@ -65,7 +65,7 @@ int contador = 0;
 
 // This class return a FULL ListView of the instant tasks to the main screen
 class taskListStyleInList extends StatefulWidget {
-  final List<taskModel> _tasks;
+  final List<Task> _tasks;
   final String list_name;
   taskListStyleInList(this._tasks, this.list_name);
 
@@ -153,7 +153,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
           key: listKey,
           initialItemCount: widget._tasks.length,
           itemBuilder: (context, index, animation) {
-            taskModel task = widget._tasks[index];
+            Task task = widget._tasks[index];
             return taskStyle(context, task, index, contadorStream, animation);
           },
         ),
@@ -161,7 +161,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
     ]);
   }
 
-  SizeTransition taskStyle(BuildContext context, taskModel task, int index,
+  SizeTransition taskStyle(BuildContext context, Task task, int index,
       StreamController contadorStream, Animation<double> animation) {
     return SizeTransition(
       sizeFactor: animation,
@@ -250,7 +250,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
   }
 
   void done_and_down(int i) {
-    taskModel taskk = widget._tasks[i];
+    Task taskk = widget._tasks[i];
     widget._tasks.removeAt(i);
     listKey.currentState!.removeItem(
         i,
@@ -265,7 +265,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
   }
 
   void undown_and_up(int i) {
-    taskModel taskk = widget._tasks[i];
+    Task taskk = widget._tasks[i];
     widget._tasks.removeAt(i);
     listKey.currentState!.removeItem(
         i,

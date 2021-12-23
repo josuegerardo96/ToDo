@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_to_do/Objects/task.dart';
-import 'package:my_to_do/helpers/colorss.dart';
+import 'package:my_to_do/helpers/Colors/colorss.dart';
 
 class Write_Task extends StatefulWidget {
   // Elementos que se le envían a esta clase
-  taskModel task;
+  Task task;
   Write_Task({required this.task});
 
   @override

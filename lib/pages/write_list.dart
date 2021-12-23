@@ -3,12 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:my_to_do/Objects/taskList.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_to_do/helpers/colorss.dart';
+import 'package:my_to_do/helpers/Colors/colorss.dart';
 
 
 class write_List extends StatefulWidget {
 
-  taskListModel listOfTasks;
+  TaskList listOfTasks;
   write_List({required this.listOfTasks});
 
   @override
