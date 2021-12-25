@@ -20,11 +20,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => every_taskList());
 
       case '/write_task':
-        return MaterialPageRoute(builder: (_) =>  Write_Task(task: args as Task));
+        return MaterialPageRoute(builder: (_) =>  Write_Task(task: args as String));
 
       case '/write_list':
         return MaterialPageRoute(
-            builder: (_) => write_List(listOfTasks: args as TaskList));
+            builder: (_) => write_List(NameList: args as String));
 
       case '/tasks_in_list':
         return MaterialPageRoute(

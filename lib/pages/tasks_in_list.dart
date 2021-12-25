@@ -1,12 +1,16 @@
 // ignore_for_file: camel_case_types, must_be_immutable, non_constant_identifier_names
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
+import 'package:my_to_do/helpers/Colors/randomColors.dart';
+import 'package:my_to_do/helpers/buttons.dart';
 import 'package:my_to_do/helpers/empty_spaces.dart';
 import 'package:my_to_do/helpers/Colors/colorss.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
+import 'package:my_to_do/helpers/texts.dart';
+import 'package:my_to_do/pages/write_list.dart';
 import 'package:my_to_do/pages/write_task.dart';
 
 class tasksInOneList extends StatefulWidget {
@@ -18,6 +22,18 @@ class tasksInOneList extends StatefulWidget {
 
 class _tasksInOneListState extends State<tasksInOneList> {
   @override
+  void initState() {
+    super.initState();
+    widget.oneTaskList.ListOfTasks.sort((a, b) {
+      if (a.getState == true) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
@@ -27,34 +43,24 @@ class _tasksInOneListState extends State<tasksInOneList> {
       child: Scaffold(
         body: SafeArea(
           child: Container(
-            child: Column(
-              children: [
-                Expanded(
-                    child: widget.oneTaskList.sizeListOfTasks > 0
-                        ? taskListStyleInList(widget.oneTaskList.getListOfTasks,
-                            widget.oneTaskList.nameList)
-                        : NoLists())
+            color: my_Colors.white,
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                        child: widget.oneTaskList.sizeListOfTasks > 0
+                            ? taskListStyleInList(
+                                widget.oneTaskList.getListOfTasks,
+                                widget.oneTaskList.nameList)
+                            : NoLists()),
+                  ],
+                ),
+
               ],
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          
-          onPressed: () {
-              Navigator.of(context)
-                  .pushNamed('/write_task',
-                      arguments: Task(taskTopic: "", state: false))
-                  .then((value) {
-                setState(() {
-                  // ToDo actualizar la base de datos
-                });
-              });
-          },
-          backgroundColor: my_Colors.background_color_blue,
-          child: Icon(Icons.add, color: my_Colors.background_color_white,),
-        
-        
-        
         ),
       ),
     );
@@ -63,10 +69,12 @@ class _tasksInOneListState extends State<tasksInOneList> {
 
 int contador = 0;
 
-// This class return a FULL ListView of the instant tasks to the main screen
+//-------------------------------
+// CREATE TASK LIST
+//-------------------------------
 class taskListStyleInList extends StatefulWidget {
-  final List<Task> _tasks;
-  final String list_name;
+  List<Task> _tasks;
+  String list_name;
   taskListStyleInList(this._tasks, this.list_name);
 
   @override
@@ -76,6 +84,7 @@ class taskListStyleInList extends StatefulWidget {
 class _taskListStyleInListState extends State<taskListStyleInList> {
   final contadorStream = new StreamController<int>();
   final listKey = GlobalKey<AnimatedListState>();
+  Color selCol = R_Colors().listOfRColors()[Random().nextInt(10)];
 
   @override
   Widget build(BuildContext context) {
@@ -84,83 +93,167 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
     contadorStream.sink.add(contador);
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       SizedBox(
-        height: 10.0,
+        height: 20.0,
       ),
 
-      // This row is the "AppBar" of the screen
-      Row(children: [
-        Expanded(
-          flex: 1,
-          child: new GestureDetector(
-            onTap: () {
-              Navigator.of(context).pushNamed('/list_lists');
-            },
-            child: Icon(Icons.arrow_back_ios_new_sharp,
-                color: my_Colors.text_color_main, size: 18),
-          ),
-        ),
-        Expanded(
-          flex: 6,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(widget.list_name,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
-                  color: my_Colors.text_color_main,
-                  fontSize: 18.0,
-                  textStyle: TextStyle(fontWeight: FontWeight.bold),
-                )),
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: StreamBuilder(
-              stream: contadorStream.stream,
-              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                if (!snapshot.hasData) {
-                  return Column(children: [
-                    circle_percent(0, 60, 12),
-                    SizedBox(height: 5.0),
-                    Text("Nothing",
-                        style: TextStyle(
-                            fontSize: 14.0, color: my_Colors.tex_color_grey))
-                  ]);
-                } else {
-                  return Column(children: [
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    circle_percent(
-                        snapshot.data! / widget._tasks.length, 60, 12),
-                    SizedBox(height: 10.0),
-                    Text(
-                        snapshot.data.toString() +
-                            " / " +
-                            widget._tasks.length.toString(),
-                        style: TextStyle(
-                            fontSize: 10.0, color: my_Colors.tex_color_grey))
-                  ]);
-                }
-              }),
-        ),
-      ]),
+      // First line
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Row(children: [
+          IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: my_Colors.black,
+                size: 18,
+              )),
+          Spacer(),
+          PopupMenuButton(
+              icon: Icon(
+                Icons.more_vert_outlined,
+                color: my_Colors.black,
+                size: 18,
+              ),
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem(
+                      value: 1,
+                      onTap: _clean_done_tasks,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.delete_sweep_outlined,
+                            color: my_Colors.red,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("Delete all complete tasks"),
+                        ],
+                      )),
+                ];
+              })
+        ]),
+      ),
 
-      SizedBox(height: 15.0),
+      SizedBox(
+        height: 5,
+      ),
+
+      // list name and circle
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              side: BorderSide(
+            color: my_Colors.light_grey,
+            width: 1,
+          )),
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(children: <Widget>[
+              StreamBuilder(
+                  stream: contadorStream.stream,
+                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Column(children: [
+                        Circle_Counter8(0, 85, 12, selCol),
+                        SizedBox(height: 5.0),
+                        counter_text_normal('0', '0', 14, selCol),
+                      ]);
+                    } else {
+                      return Column(children: [
+                        SizedBox(
+                          height: 15.0,
+                        ),
+
+                        widget._tasks.length != 0 ?
+                        Circle_Counter8(snapshot.data! / widget._tasks.length,
+                            85, 16, selCol):
+                        Circle_Counter8(0,
+                            85, 16, selCol)
+                        ,
+
+                        SizedBox(height: 10.0),
+                        counter_text_normal(snapshot.data.toString(),
+                            widget._tasks.length.toString(), 12, selCol),
+                      ]);
+                    }
+                  }),
+              SizedBox(
+                width: 35,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 18.0),
+                  child: GestureDetector(
+                      onLongPress: () => _changeNameOfList(),
+                      child: Title18_2(widget.list_name)),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
+
+      SizedBox(height: 20.0),
 
       // It's where the tasks are created
       Expanded(
-        child: AnimatedList(
-          key: listKey,
-          initialItemCount: widget._tasks.length,
-          itemBuilder: (context, index, animation) {
-            Task task = widget._tasks[index];
-            return taskStyle(context, task, index, contadorStream, animation);
-          },
+        child: Stack(
+          children: [
+
+
+  
+
+            AnimatedList(
+              key: listKey,
+              padding: EdgeInsets.only(
+                  left: 2, bottom: kFloatingActionButtonMargin + 60),
+              initialItemCount: widget._tasks.length,
+              itemBuilder: (context, index, animation) {
+                Task task = widget._tasks[index];
+                return taskStyle(context, task, index, contadorStream, animation);
+              },
+            ),
+
+            if(widget._tasks.length == 0)...[Center(child: NotaksInList())],
+
+            
+            Align(
+                  alignment: Alignment.bottomRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      // Write a new task
+                      _go_to_writeTask();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: float_button(
+                          "Add task",
+                          Icon(
+                            Icons.add,
+                            color: my_Colors.white,
+                            size: 20,
+                          ),
+                          my_Colors.green,
+                          50,
+                          120,
+                          10),
+                    ),
+                  ),
+                ),
+
+
+          ],
         ),
       ),
     ]);
   }
 
+  
+  // Design task by task
   SizeTransition taskStyle(BuildContext context, Task task, int index,
       StreamController contadorStream, Animation<double> animation) {
     return SizeTransition(
@@ -171,37 +264,39 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
           children: <Widget>[
             // Button for check the state of the task
             new GestureDetector(
-              onTap: () {
-                setState(() {
-                  if (task.state == true) {
-                    contador++;
-                    task.state = false;
-                    done_and_down(index);
+                onTap: () {
+                  setState(() {
+                    if (task.state == true) {
+                      contador++;
+                      task.state = false;
+                      done_and_down(index);
 
-                    // Check as UNDONe
-                  } else {
-                    contador--;
-                    task.state = true;
-                    undown_and_up(index);
-                  }
-                });
+                      if(contador == widget._tasks.length && contador != 0){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: celebration() ,
+                        duration: const Duration(seconds: 3),
+                      ));
+                      }
 
-                contadorStream.sink.add(contador);
+                      // Check as UNDONe
+                    } else {
+                      contador--;
+                      task.state = true;
+                      undown_and_up(index);
+                    }
+                  });
 
-                //db_Instant_Task().updateState_MyInstantTasks(widget.index);
-              },
-              child: task.state
-                  ? Image(
-                      image: AssetImage('assets/circle.png'),
-                      height: 25,
-                      width: 25,
-                    )
-                  : Image(
-                      image: AssetImage('assets/circle-check.png'),
-                      height: 25,
-                      width: 25,
-                    ),
-            ),
+                  contadorStream.sink.add(contador);
+                },
+                child: task.state
+                    ? Icon(
+                        Icons.check_box_outline_blank_sharp,
+                        color: my_Colors.deep_grey,
+                      )
+                    : Icon(
+                        Icons.check_box_sharp,
+                        color: my_Colors.green,
+                      )),
 
             SizedBox(
               width: 10.0,
@@ -210,36 +305,28 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
             // El apartado del texto
             Expanded(
               child: new GestureDetector(
-                onTap: () {
-                  task.setState = true;
-                  Navigator.of(context)
-                      .pushNamed('/write_task', arguments: task);
-                },
-                child: Expanded(
-                  child: Container(
-                    decoration: new BoxDecoration(
-                        color: my_Colors.background_color_task,
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10.0),
-                            topLeft: Radius.circular(10.0))),
+                onTap: () async {
 
-                    // TEXT
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 10.0),
-                      child: Text(
-                        task.taskTopic,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
-                            fontSize: 14.0,
-                            color: Color(0xff202B57),
-                            textStyle: task.state
-                                ? TextStyle(decoration: TextDecoration.none)
-                                : TextStyle(
-                                    decoration: TextDecoration.lineThrough)),
-                      ),
-                    ),
-                  ),
+
+                  String new_task_topic = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Write_Task(task: task.getTaskTopic)));
+                  
+                  if(new_task_topic != ""){
+                    setState(() {
+                      task.setTaskTopic = new_task_topic;
+                    });
+                  }
+
+                  
+                },
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+                  child: task.getState
+                      ? task_text14(task.getTaskTopic)
+                      : task_text14_done(task.getTaskTopic),
                 ),
               ),
             )
@@ -247,6 +334,63 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
         ),
       ),
     );
+  }
+
+
+
+  //-------------------------------------------------
+  // Functions for list:
+  // change name
+  // adding, erasing and clean the list
+  //--------------------------------------------------
+
+  _go_to_writeTask() async {
+    String task_name = await Navigator.push(
+      context, 
+      MaterialPageRoute(builder: 
+      (context)=> Write_Task(task: "")));
+
+      if(task_name != ""){
+        setState(() {
+          insert_task(Task(taskTopic: task_name, state: true));
+        });
+      } 
+  }
+
+  void _changeNameOfList() async {
+    String new_name = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => write_List(
+                  NameList: widget.list_name,
+                )));
+
+    if(new_name != ""){
+      setState(() {
+        widget.list_name = new_name;
+      });
+    }
+  }
+
+  _clean_done_tasks() {
+    setState(() {
+      for (int i = 0; i < widget._tasks.length; i++) {
+        setState(() {
+          if (widget._tasks[i].getState == false) {
+            Task taskk = widget._tasks[i];
+            widget._tasks.removeAt(i);
+            listKey.currentState!.removeItem(
+              i,
+              (context, animation) =>
+                  taskStyle(context, taskk, i, contadorStream, animation),
+              duration: Duration(milliseconds: 100),
+            );
+
+            i--;
+          }
+        });
+      }
+    });
   }
 
   void done_and_down(int i) {
@@ -262,6 +406,11 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
     widget._tasks.insert(newIndex, taskk);
     listKey.currentState!
         .insertItem(newIndex, duration: Duration(milliseconds: 500));
+  }
+
+  void insert_task(Task taskk){
+    widget._tasks.insert(0, taskk);
+    listKey.currentState!.insertItem(0, duration: Duration(milliseconds: 500)); 
   }
 
   void undown_and_up(int i) {

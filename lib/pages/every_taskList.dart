@@ -1,14 +1,16 @@
 // ignore_for_file: camel_case_types, must_be_immutable, non_constant_identifier_names
 
-import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
+import 'package:my_to_do/helpers/Colors/randomColors.dart';
+import 'package:my_to_do/helpers/buttons.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
 import 'package:my_to_do/helpers/empty_spaces.dart';
 import 'package:my_to_do/helpers/Colors/colorss.dart';
 import 'package:my_to_do/DB/db_list_tasks.dart';
+import 'package:my_to_do/helpers/texts.dart';
 import 'package:my_to_do/helpers/titles.dart';
 
 class every_taskList extends StatefulWidget {
@@ -19,177 +21,269 @@ class every_taskList extends StatefulWidget {
 
 
 class _every_taskListState extends State<every_taskList> {
-
-  // Fill every-List of tasks
   List<TaskList> myLists = [];
+  TextEditingController text_list = new TextEditingController();
 
   // Start every-List of tasks
   @override
   void initState() {
     super.initState();
+    // Fill every-List of tasks
     myLists = db_list_tasks().start_myListOfTasks();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         Navigator.of(context).pop();
         return true;
-
       },
       child: Scaffold(
         body: SafeArea(
             child: Container(
           color: my_Colors.background_color_white,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // TITLE
-              new GestureDetector(
-                  onTap: () {
-                    Navigator.popAndPushNamed(context, "/");
-                  },
-                  child: title()),
-    
-              // COUNT THE LISTS
-              line_text("Lists", myLists.length.toString() + " lists"),
-    
-              SizedBox(height: 20.0),
-              
-              // SHOW EVERY-TASKLIST
-              Expanded(
-                  child: myLists.length > 0
-                      ? ListView.builder(
-                          itemCount: myLists.length,
-                          itemBuilder: (context, index) {
-                            TaskList list = myLists[index];
-                            return every_taskList_Style(list, index, context);},)
-                      : NoLists()),
-            ],
-          ),
-        )),
-    
-    
-        // FAB Button
-        floatingActionButton: FabCircularMenu(
-          fabOpenIcon: Icon(Icons.add, color: my_Colors.background_color_white),
-          fabCloseIcon:
-              Icon(Icons.close, color: my_Colors.background_color_white),
-          ringColor: Colors.transparent,
-          fabMargin: EdgeInsets.all(20.0),
-          ringWidth: MediaQuery.of(context).size.width * 0.9,
-          children: <Widget>[
-            // Create a new List
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/write_list",
-                      arguments: TaskList(nameList: "", ListOfTasks: [])).then((value){setState(() {
-                        // ToDo actualizar la lista con los cambios que se hayan hecho
-
-
-                      });});
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: my_Colors.text_color_main,
-                )),
-    
-            // Delete all lists completes
-            IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("All list completed removed"),
-                    duration: const Duration(seconds: 3),
-                  ));
-    
-                  setState(() {
-                    myLists.removeWhere((e) => e.allDoneInList == 0);
-                  });
-                },
-                icon: Icon(Icons.delete, color: my_Colors.text_color_main)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
-
-
-//-------------------------------
-// VISUAL: CREATE EVERY TASKLIST
-//-------------------------------
-Container every_taskList_Style(TaskList myLists, int index, BuildContext context){
-  List<Task> lista = myLists.ListOfTasks;
-  int allDone = lista.where((e) => e.getState == false).length;
-
-  return Container(
-    height: 150.0,
-    margin: EdgeInsets.symmetric(horizontal: 10.0),
-    child: new GestureDetector(
-      onTap: () {
-        Navigator.of(context)
-            .pushNamed("/tasks_in_list", arguments: myLists);
-      },
-      child: Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        color: my_Colors.background_color_task,
-        elevation: 0.2,
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 6,
-                child: Column(
+              // Buttons
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+                child: Row(
                   children: <Widget>[
-                    Expanded(
-                      flex: 7,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          myLists.getNameList,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          style: GoogleFonts.roboto(
-                            fontSize: 18.0,
-                            color: my_Colors.text_color_main,
-                            textStyle: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                    IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_outlined,
+                          color: my_Colors.black,
+                          size: 20,
+                        )),
+                    Title20("Lists of tasks"),
+                    Spacer(),
+                    PopupMenuButton(
+                        icon: Icon(
+                          Icons.more_vert_outlined,
+                          color: my_Colors.black,
                         ),
-                      ),
-                    ),
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            PopupMenuItem(
+                                value: 1,
+                                onTap: _clean_done_lists,
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.delete_sweep_outlined,
+                                      color: my_Colors.red,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Delete all complete lists"),
+                                  ],
+                                )),
+                        
+                          ];
+                        }),
                   ],
                 ),
               ),
+
+              SizedBox(
+                height: 30,
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    height: 35,
+                    width: 220,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: my_Colors.light_grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: text_list,
+                      onChanged: (_) => setState(() {}),
+                      cursorColor: my_Colors.green,
+                      maxLength: 40,
+                      decoration: InputDecoration(
+                        counterText: '',
+                        contentPadding: EdgeInsets.only(bottom: 17.5),
+                        border: InputBorder.none,
+                        hintText: "Add a new list",
+                        hintStyle: GoogleFonts.roboto(
+                          fontSize: 14,
+                          color: my_Colors.light_grey,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        // ToDo Crear función para agregar nueva lista basada en el nombre
+                        TaskList tl = TaskList(
+                            nameList: text_list.text.trim(), ListOfTasks: []);
+                        myLists.insert(0, tl);
+                        text_list.text = "";
+                        setState(() {});
+                      },
+                      child: add_list_button()),
+                ],
+              ),
+
+              SizedBox(
+                height: 5,
+              ),
+
+              Align(
+                  alignment: Alignment.center,
+                  child: little_text_word_counter(
+                      text_list.text.length.toString(), "40")),
+
+              SizedBox(
+                height: 40,
+              ),
+
               Expanded(
-                flex: 4,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    circle_percent(
-                        allDone / myLists.sizeListOfTasks, 60.0, 12.0),
-                    SizedBox(height: 10.0),
-                    Text(
-                      allDone.toString() +
-                          " / " +
-                          myLists.sizeListOfTasks.toString(),
-                      style: GoogleFonts.roboto(
-                          color: my_Colors.tex_color_grey, fontSize: 12),
-                    )
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 38.0),
+                  child: 
+                  myLists.length == 0 ? 
+                    NoLists() :
+                    GridView.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 150,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20),
+                        itemCount: myLists.length,
+                        itemBuilder: (context, index) {
+                          return cardList(myLists[index], index);
+                        }),
                 ),
-              )
+              ),
             ],
           ),
-        ),
+        )),
       ),
-    ),
-  );
+    );
+  }
+
+
+  _clean_done_lists(){
+    
+    setState(() {
+      myLists.removeWhere((e) => e.allDoneInList == e.sizeListOfTasks);
+    });
+  }
+
+
+  //-------------------------------
+  // VISUAL: CREATE EVERY CARD LIST
+  //-------------------------------
+
+  Container cardList(TaskList taskList, int index) {
+    Color selCol = R_Colors().listOfRColors()[index % 10];
+
+    return Container(
+        height: 150,
+        width: 150,
+        child: GestureDetector(
+
+          onTap: (){
+
+            Navigator.of(context)
+              .pushNamed("/tasks_in_list", arguments: taskList)
+              .then((value) {
+                setState(() {
+                  // ToDo actualizar la lista con los cambios realizados
+                });
+              });
+          },
+
+
+          onLongPress: (){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Do you want to remove this list?"),
+              duration: const Duration(seconds: 4),
+              action: SnackBarAction(
+                textColor: my_Colors.green,
+                label: "Yes",
+                onPressed: (){
+                  setState(() {
+                    myLists.removeAt(index);
+                  });
+                },
+              ),
+            ));
+          },
+
+
+          child: Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                color: my_Colors.light_grey,
+                width: 1,
+              )),
+              child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  child: Column(children: <Widget>[
+                    // Row of counter and Circle
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 1.0, vertical: 1),
+                      child: Row(
+                        children: [
+                          taskList.sizeListOfTasks == 0
+                              ? Circle_Counter(0, 50, 10, selCol)
+                              : Circle_Counter(
+                                  taskList.allDoneInList / taskList.sizeListOfTasks,
+                                  50,
+                                  10,
+                                  selCol),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          counter_text_normal(taskList.allDoneInList.toString(),
+                              taskList.sizeListOfTasks.toString(), 10, selCol),
+                        ],
+                      ),
+                    ),
+        
+                    Spacer(
+                      flex: 1,
+                    ),
+        
+                    // List title
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      alignment: Alignment.centerLeft,
+                      child: little_text(taskList.getNameList),
+                    ),
+                  ]))),
+        ));
+  }
+
+
+
+
+
 
 }
+
+
+
+
+
+
+
+
+

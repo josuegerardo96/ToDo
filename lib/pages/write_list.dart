@@ -8,8 +8,8 @@ import 'package:my_to_do/helpers/Colors/colorss.dart';
 
 class write_List extends StatefulWidget {
 
-  TaskList listOfTasks;
-  write_List({required this.listOfTasks});
+  String NameList;
+  write_List({required this.NameList});
 
   @override
   _write_ListState createState() => _write_ListState();
@@ -27,13 +27,13 @@ class _write_ListState extends State<write_List> {
   @override
   void initState() {
     super.initState();
-    myController.text = widget.listOfTasks.getNameList;
+    myController.text = widget.NameList;
   }
   
 
   @override
   Widget build(BuildContext context) {
-  String originalText = widget.listOfTasks.getNameList;
+  String originalText = widget.NameList;
 
   // if the original text is empty that means it is a new item to add
   originalText == "" ? escribirNuevo = false : escribirNuevo = true;
@@ -41,7 +41,7 @@ class _write_ListState extends State<write_List> {
 
   return WillPopScope(
     onWillPop: () async {
-      Navigator.of(context).pop();
+      Navigator.pop(context, "");
       return true;
     },
     child: Scaffold(
@@ -112,11 +112,11 @@ class _write_ListState extends State<write_List> {
             onPressed: (){
               
               if(editado && myController.text.isNotEmpty){  
-                widget.listOfTasks.setNameList = myController.text.trim();
-                backTo_listOfLists(context);
+                widget.NameList = myController.text.trim();
+                Navigator.pop(context,widget.NameList);
   
               }else if(myController.text.isEmpty || editado==false){
-                backTo_listOfLists(context);
+                Navigator.pop(context,widget.NameList);
               }
               
             },
@@ -138,6 +138,6 @@ class _write_ListState extends State<write_List> {
 }
 
 
-void backTo_listOfLists(BuildContext context) {
-    Navigator.of(context).pop();
-}
+// void backTo_listOfLists(BuildContext context) {
+//     Navigator.of(context).pop();
+// }

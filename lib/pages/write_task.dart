@@ -2,112 +2,134 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/helpers/Colors/colorss.dart';
+import 'package:my_to_do/helpers/buttons.dart';
 
 class Write_Task extends StatefulWidget {
   // Elementos que se le envían a esta clase
-  Task task;
+  String task;
   Write_Task({required this.task});
-
   @override
   State<Write_Task> createState() => _Write_TaskState();
 }
 
 class _Write_TaskState extends State<Write_Task> {
-  TextEditingController myController = new TextEditingController();
+  TextEditingController writing_task = new TextEditingController();
   bool editado = false;
-
-  // if it gets a state FALSE is a new one, if it's a TRUE is already a task
   bool escribirNuevo = false;
+  String originalText = "";
+  
 
   @override
   void initState() {
     super.initState();
-    myController.text = widget.task.taskTopic;
+    originalText = widget.task;
+    writing_task.text = widget.task;
+    widget.task == "" ?
+      escribirNuevo = true:
+      escribirNuevo = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    String originalText = widget.task.taskTopic;
-    escribirNuevo = widget.task.getState;
-
+    
     return WillPopScope(
       onWillPop: () async {
-        // Refresh the info in the next page
-        Navigator.of(context).pop();
+        Navigator.pop(context, "");
         return true;
       },
+
       child: Scaffold(
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(30.0),
-                child: TextField(
-                  controller: myController,
-                  onChanged: (text) {
-                    setState(() {
-                      originalText == text ? editado = false : editado = true;
-                    });
-                  },
-                  autofocus: escribirNuevo ? false : true,
-                  style: GoogleFonts.roboto(
-                      color: my_Colors.text_color_main, fontSize: 18),
-                  decoration: InputDecoration(border: InputBorder.none),
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1,
-                  maxLines: 6,
+          
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(30.0),
+
+                    child: TextField(
+                      controller: writing_task,
+                      onChanged: (text) {
+                        setState(() {
+                          originalText == text ? 
+                            editado = false: 
+                            editado = true;
+                          print(editado.toString());
+                        });
+                      },
+                      decoration: InputDecoration(border: InputBorder.none),
+                      keyboardType: TextInputType.multiline,
+                      minLines: 1,
+                      maxLines: 6,
+                      autofocus: escribirNuevo ? true : false,
+                      style: GoogleFonts.roboto(
+                          color: my_Colors.black, 
+                          fontSize: 18
+                      ),
+                    ),
+                  )
+                ],
+              ),
+
+
+              // Float button
+
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: GestureDetector(
+                    
+                    onTap: (){
+
+                      if(escribirNuevo == false && editado == false){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("You have not done a change"),
+                            duration: const Duration(seconds: 4),
+                          )
+                        );
+                      }else if(writing_task.text.trim().isNotEmpty){
+                        Navigator.pop(context, writing_task.text.trim());
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("You have no written a task"),
+                            duration: const Duration(seconds: 4),
+                          )
+                        );
+                      }
+                    },
+              
+                    child: 
+                    escribirNuevo ?
+                    // If you're creating a new task
+                    float_button(
+                      "Add task", 
+                      Icon(Icons.keyboard_arrow_up_outlined, color: my_Colors.white,), 
+                      my_Colors.green, 
+                      50, 
+                      120, 
+                      10):
+
+                      // If you have to update the task
+                      float_button(
+                      "Update task", 
+                      Icon(Icons.update, color: my_Colors.white,), 
+                      my_Colors.deep_grey, 
+                      50, 
+                      160, 
+                      10)
+                  ),
                 ),
               )
+
+
             ],
           ),
         ),
-        floatingActionButton: widget.task.getTaskTopic != ""
-            ?
-            // When it has to read a task
-            FloatingActionButton.extended(
-                label: Text("Update task"),
-                onPressed: () {
-                  if (editado && myController.text.isNotEmpty) {
-                    widget.task.setTaskTopic = myController.text.trim();
-                    widget.task.setState = true;
-                    backTo_main(context);
-                  } else if (myController.text.isEmpty || editado == false) {
-                    backTo_main(context);
-                  }
-                },
-                icon: Icon(editado ? Icons.edit : Icons.edit_off,
-                    color: my_Colors.background_color_white),
-                backgroundColor: my_Colors.background_color_blue,
-              )
-            :
-
-            // When it's a new task
-            FloatingActionButton.extended(
-                label: Text("Add task"),
-                onPressed: () {
-                  if (editado && myController.text.isNotEmpty) {
-                    widget.task.setTaskTopic = myController.text.trim();
-                    widget.task.setState = true;
-                    backTo_main(context);
-                  } else if (myController.text.isEmpty || editado == false) {
-                    backTo_main(context);
-                  }
-                },
-                icon: Icon(editado ? Icons.edit : Icons.keyboard_arrow_up,
-                    color: my_Colors.background_color_white),
-                backgroundColor: my_Colors.background_color_blue,
-              ),
-        floatingActionButtonLocation: widget.task.getTaskTopic != ""
-            ? FloatingActionButtonLocation.centerFloat
-            : FloatingActionButtonLocation.endFloat,
       ),
     );
   }
-}
-
-void backTo_main(BuildContext context) {
-  Navigator.popAndPushNamed(context, "/");
 }

@@ -12,10 +12,14 @@ import 'package:my_to_do/helpers/buttons.dart';
 import 'package:my_to_do/helpers/texts.dart';
 import 'package:my_to_do/helpers/route_generators.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
+import 'package:my_to_do/pages/write_task.dart';
 import 'helpers/empty_spaces.dart';
 
 void main() {
   runApp(new MaterialApp(
+    theme: ThemeData(
+      
+    ),
     debugShowCheckedModeBanner: false,
     initialRoute: '/', // main route of the app
     onGenerateRoute: RouteGenerator
@@ -32,6 +36,8 @@ void main() {
 //    List of every-taskList
 //    List of instant tasks
 //------------------------------------------
+// AnimatedList effect
+var listKey = GlobalKey<AnimatedListState>();
 
 class main_screen extends StatefulWidget {
   @override
@@ -51,6 +57,7 @@ class _main_screenState extends State<main_screen> {
     MytaskListList = db_list_tasks().start_myListOfTasks();
   }
 
+
   @override
   Widget build(BuildContext context) {
     // Change statusBar color
@@ -62,102 +69,82 @@ class _main_screenState extends State<main_screen> {
       body: SafeArea(
         child: Container(
           color: my_Colors.background_color_white,
-          child: Stack(
-            children: [
-              Column(
-                // The full column will take all the space in the screen
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
-                  ),
-
-                  // Title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(children: [
-                      Expanded(child: Main_title()),
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.more_vert,
-                            color: my_Colors.black,
-                          )),
-                    ]),
-                  ),
-
-                  SizedBox(
-                    height: 40,
-                  ),
-
-                  // Title of lists
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Row(children: [
-                      Expanded(child: Title18("List of tasks")),
-                      little_text_counter(MytaskListList.length.toString()),
-                    ]),
-                  ),
-
-                  SizedBox(
-                    height: 18,
-                  ),
-
-                  // LIST OF LISTS
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      children: <Widget>[
-                        // When there are lists
-                        Expanded(
-                            child: MytaskListList.length > 0
-                                ? every_taskList_in_main(MytaskListList)
-                                : NoListsInMain()),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 40,
-                  ),
-
-                  // INSTANT TASKS
-                  Expanded(
-                      child: MyinstantTasksList.length > 0
-                          ? taskListStyle(MyinstantTasksList)
-                          : NoInstantTasks())
-                ],
+          child: Column(
+            // The full column will take all the space in the screen
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(
+                height: 40,
               ),
-              Align(
-                alignment: Alignment.bottomRight,
+
+              // Title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Row(children: [
+                  Main_title(),
+                  
+                ]),
+              ),
+
+              SizedBox(
+                height: 40,
+              ),
+
+              // Title of lists
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: GestureDetector(
-                  onTap: () {
-                    // Write a new task
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: float_button(
-                        "Add task",
-                        Icon(
-                          Icons.add,
-                          color: my_Colors.white,
-                          size: 20,
-                        ),
-                        my_Colors.green),
-                  ),
+                  onTap: () => Navigator.pushNamed(context, "/list_lists"),
+                  child: Row(children: [
+                    Title18("List of tasks"),
+                    SizedBox(width: 10,),
+                    Icon(Icons.keyboard_arrow_right_outlined, color: R_Colors.green,),
+                    Spacer(),
+                    little_text_counter_normal(MytaskListList.length.toString()),
+                  ]),
                 ),
               ),
+
+              SizedBox(
+                height: 18,
+              ),
+
+              // LIST OF LISTS
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    // When there are lists
+                    MytaskListList.length > 0
+                        ? Expanded(
+                            child: every_taskList_in_main(MytaskListList))
+                        : Center(child: NoListsInMain()),
+                  ],
+                ),
+              ),
+
+              SizedBox(
+                height: 40,
+              ),
+
+              // INSTANT TASKS
+              Expanded(
+                child: taskListStyle(MyinstantTasksList))
             ],
           ),
         ),
       ),
     );
   }
+
+
+
 }
 
-//--------------------------------------
+//----------------------------------------------------------------------------
 //VISUAL
-//--------------------------------------
+//----------------------------------------------------------------------------
 
 //-------------------------------
 // EVERY-TASKlIST
@@ -215,11 +202,10 @@ class _everyTaskListInMaineState extends State<everyTaskListInMain> {
         child: Card(
           elevation: 3,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0),
               side: BorderSide(
-                color: my_Colors.light_grey,
-                width: 1,
-              )),
+            color: my_Colors.light_grey,
+            width: 1,
+          )),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Column(
@@ -229,7 +215,7 @@ class _everyTaskListInMaineState extends State<everyTaskListInMain> {
                     width: double.infinity,
                     height: 50,
                     alignment: Alignment.centerLeft,
-                    child: little_text(widget.taskList.getNameList)),
+                    child: little_text_counter_normal(widget.taskList.getNameList)),
 
                 Spacer(
                   flex: 1,
@@ -243,7 +229,7 @@ class _everyTaskListInMaineState extends State<everyTaskListInMain> {
                       Expanded(
                         child: Align(
                           alignment: Alignment.topLeft,
-                          child: counter_text(
+                          child: counter_text_normal(
                               widget.taskList.allDoneInList.toString(),
                               widget.taskList.sizeListOfTasks.toString(),
                               10,
@@ -268,6 +254,9 @@ class _everyTaskListInMaineState extends State<everyTaskListInMain> {
   }
 }
 
+
+
+
 //-------------------------------
 // INSTANT TASK LIST CLASS
 //-------------------------------
@@ -281,10 +270,10 @@ class taskListStyle extends StatefulWidget {
   State<taskListStyle> createState() => _taskListStyleState();
 }
 
+
 class _taskListStyleState extends State<taskListStyle>
     with SingleTickerProviderStateMixin {
   final contadorStream = new StreamController<int>();
-  final listKey = GlobalKey<AnimatedListState>();
 
   @override
   void dispose() {
@@ -305,7 +294,9 @@ class _taskListStyleState extends State<taskListStyle>
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Row(children: [
                 Expanded(child: Title18("Simple tasks")),
-                counter_text(
+                IconButton(onPressed: ()=> delete_all_done(), icon: Icon(Icons.delete_outline_outlined, color: my_Colors.red,)),
+                SizedBox(width: 10,),
+                counter_text_normal(
                   snapshot.data.toString(),
                   widget._tasks.length.toString(),
                   12,
@@ -314,16 +305,49 @@ class _taskListStyleState extends State<taskListStyle>
               ]),
             );
           }),
-      SizedBox(height: 15.0),
       Expanded(
-        child: AnimatedList(
-          key: listKey,
-          padding: EdgeInsets.only(bottom: kFloatingActionButtonMargin + 60),
-          initialItemCount: widget._tasks.length,
-          itemBuilder: (context, index, animation) {
-            return taskStyle(this.context, widget._tasks[index], index,
-                contadorStream, animation);
-          },
+        child: Stack(
+          children: [
+
+            
+            AnimatedList(
+              key: listKey,
+              padding: EdgeInsets.only(left: 2,bottom: kFloatingActionButtonMargin + 60),
+              initialItemCount: widget._tasks.length,
+              itemBuilder: (context, index, animation) {
+                return taskStyle(this.context, widget._tasks[index], index,
+                    contadorStream, animation);
+              },
+            ),
+
+            if(widget._tasks.length == 0) ...[Center(child: NoInstantTasks())],
+
+            
+            Align(
+                alignment: Alignment.bottomRight,
+                child: GestureDetector(
+                  onTap: () {
+                    // Write a new task
+                    _go_to_writeTask();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: float_button(
+                        "Add task",
+                        Icon(
+                          Icons.add,
+                          color: my_Colors.white,
+                          size: 20,
+                        ),
+                        my_Colors.green,
+                        50,
+                        120,
+                        10),
+                  ),
+                ),
+              ),
+
+          ],
         ),
       ),
     ]);
@@ -347,6 +371,14 @@ class _taskListStyleState extends State<taskListStyle>
                       task.state = false;
                       done_and_down(index);
 
+                      if(contador == widget._tasks.length && contador != 0){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: celebration() ,
+                        duration: const Duration(seconds: 3),
+                      ));
+                      }
+                      
+
                       // Check as UNDONe
                     } else {
                       contador--;
@@ -356,8 +388,6 @@ class _taskListStyleState extends State<taskListStyle>
                   });
 
                   contadorStream.sink.add(contador);
-
-                  //db_Instant_Task().updateState_MyInstantTasks(widget.index);
                 },
                 child: task.state
                     ? Icon(
@@ -376,22 +406,24 @@ class _taskListStyleState extends State<taskListStyle>
             // El apartado del texto
             Expanded(
               child: new GestureDetector(
-                onTap: () {
-                  task.setState = true;
-                  Navigator.of(context)
-                      .pushNamed('/write_task', arguments: task)
-                      .then((value) {
+                onTap: () async {
+                  String new_task_topic = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Write_Task(task: task.getTaskTopic)));
+                  
+                  if(new_task_topic != ""){
                     setState(() {
-                      //ToDo actualizar la base de datos
+                      task.setTaskTopic = new_task_topic;
                     });
-                  });
+                  }
                 },
                 child: Padding(
                   padding:
                       EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
                   child: task.getState
-                      ? task_text16(task.getTaskTopic)
-                      : task_text16_done(task.getTaskTopic),
+                      ? task_text14(task.getTaskTopic)
+                      : task_text14_done(task.getTaskTopic),
                 ),
               ),
             )
@@ -399,6 +431,25 @@ class _taskListStyleState extends State<taskListStyle>
         ),
       ),
     );
+  }
+
+
+  _go_to_writeTask() async {
+    String task_name = await Navigator.push(
+      context, 
+      MaterialPageRoute(builder: 
+      (context)=> Write_Task(task: "")));
+
+      if(task_name != ""){
+        setState(() {
+          insert_task(Task(taskTopic: task_name, state: true));
+        });
+      } 
+  }
+
+  void insert_task(Task taskk){
+    widget._tasks.insert(0, taskk);
+    listKey.currentState!.insertItem(0, duration: Duration(milliseconds: 500)); 
   }
 
   void done_and_down(int i) {
@@ -414,6 +465,36 @@ class _taskListStyleState extends State<taskListStyle>
     widget._tasks.insert(newIndex, taskk);
     listKey.currentState!
         .insertItem(newIndex, duration: Duration(milliseconds: 500));
+  }
+
+  void delete_all_done() {
+
+      for (int i = 0; i < widget._tasks.length; i++) {
+        setState(() {
+            if (widget._tasks[i].getState == false) {
+              Task taskk = widget._tasks[i];
+              widget._tasks.removeAt(i);
+              listKey.currentState!.removeItem(
+                  i,
+                  (context, animation) =>
+                      taskStyle(context, taskk, i, contadorStream, animation),
+                  );
+              
+              i--;
+            }
+        });
+      }
+
+      listKey = GlobalKey<AnimatedListState>();
+
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("All done tasks have been removed"),
+        duration: const Duration(seconds: 3),
+      ));
+
+      
+
   }
 
   void undown_and_up(int i) {
