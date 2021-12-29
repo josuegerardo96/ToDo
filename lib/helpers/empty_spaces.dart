@@ -76,8 +76,8 @@ Container NoInstantTasks(){
             children: <Widget>[
               Image(
                 image: AssetImage('assets/relax.png'),
-                height: 128,
-                width: 128,
+                height: 120,
+                width: 120,
               ),    
               SizedBox(height: 20.0),        
               text16_bold("You have nothing to do"),

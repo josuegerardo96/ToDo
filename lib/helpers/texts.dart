@@ -48,6 +48,17 @@ Text Title18(String texto){
   );
 }
 
+
+Text subtitle18(String texto){
+  return Text(
+    texto,
+    style: GoogleFonts.lato(
+      fontSize: 18.0,
+      color: my_Colors.black
+    ),
+  );
+}
+
 Text Title18_2(String texto){
   return Text(
     texto,
@@ -95,6 +106,17 @@ Text little_text_counter_normal(String texto){
       fontSize: 12,
       color: my_Colors.green,
       fontWeight: FontWeight.bold,
+    ),
+  );
+}
+
+
+Text little_text_normal(String texto){
+  return Text(
+    texto,
+    style: GoogleFonts.lato(
+      fontSize: 12,
+      color: my_Colors.black,
     ),
   );
 }

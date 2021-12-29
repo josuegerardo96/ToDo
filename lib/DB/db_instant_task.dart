@@ -50,7 +50,7 @@ class db_Instant_Task {
 
 
   void updateState_MyInstantTasks(int id){
-    _myInstantTasks[id].state = !_myInstantTasks[id].state;
+    _myInstantTasks[id].state = !_myInstantTasks[id].state!;
   }
 
   void updateTaskTopic_MyInstantTask(String str, int id){

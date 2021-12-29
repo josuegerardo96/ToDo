@@ -288,7 +288,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
 
                   contadorStream.sink.add(contador);
                 },
-                child: task.state
+                child: task.state!
                     ? Icon(
                         Icons.check_box_outline_blank_sharp,
                         color: my_Colors.deep_grey,
@@ -311,7 +311,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
                   String new_task_topic = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Write_Task(task: task.getTaskTopic)));
+                          builder: (context) => Write_Task(task: task.getTaskTopic!)));
                   
                   if(new_task_topic != ""){
                     setState(() {
@@ -324,9 +324,9 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
                 child: Padding(
                   padding:
                       EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                  child: task.getState
-                      ? task_text14(task.getTaskTopic)
-                      : task_text14_done(task.getTaskTopic),
+                  child: task.getState!
+                      ? task_text14(task.getTaskTopic!)
+                      : task_text14_done(task.getTaskTopic!),
                 ),
               ),
             )
