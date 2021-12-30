@@ -11,25 +11,27 @@ import 'package:my_to_do/helpers/empty_spaces.dart';
 import 'package:my_to_do/helpers/Colors/colorss.dart';
 import 'package:my_to_do/DB/db_list_tasks.dart';
 import 'package:my_to_do/helpers/texts.dart';
-import 'package:my_to_do/helpers/titles.dart';
+import 'package:my_to_do/DB/lists_firebase.dart';
 
 class every_taskList extends StatefulWidget {
   @override
   State<every_taskList> createState() => _every_taskListState();
 }
 
-
-
 class _every_taskListState extends State<every_taskList> {
   List<TaskList> myLists = [];
   TextEditingController text_list = new TextEditingController();
 
-  // Start every-List of tasks
+
   @override
   void initState() {
     super.initState();
-    // Fill every-List of tasks
-    myLists = db_list_tasks().start_myListOfTasks();
+    getLists();
+  }
+
+  getLists() async {
+    myLists = await Lists_firebase().getAllLists();
+    setState(() {});
   }
 
   @override
@@ -82,7 +84,6 @@ class _every_taskListState extends State<every_taskList> {
                                     Text("Delete all complete lists"),
                                   ],
                                 )),
-                        
                           ];
                         }),
                   ],
@@ -126,13 +127,20 @@ class _every_taskListState extends State<every_taskList> {
                     width: 10,
                   ),
                   GestureDetector(
+                      onLongPress: (){setState(() {
+                        
+                        
+                        
+                        
+                      });},
                       onTap: () {
-                        // ToDo Crear función para agregar nueva lista basada en el nombre
                         TaskList tl = TaskList(
                             nameList: text_list.text.trim(), ListOfTasks: []);
                         myLists.insert(0, tl);
-                        text_list.text = "";
+
                         setState(() {});
+                        Lists_firebase().CreateList(text_list.text.trim());
+                        text_list.text = "";
                       },
                       child: add_list_button()),
                 ],
@@ -154,18 +162,18 @@ class _every_taskListState extends State<every_taskList> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 38.0),
-                  child: 
-                  myLists.length == 0 ? 
-                    NoLists() :
-                    GridView.builder(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 150,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20),
-                        itemCount: myLists.length,
-                        itemBuilder: (context, index) {
-                          return cardList(myLists[index], index);
-                        }),
+                  child: myLists.length == 0
+                      ? NoLists()
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 150,
+                                  crossAxisSpacing: 20,
+                                  mainAxisSpacing: 20),
+                          itemCount: myLists.length,
+                          itemBuilder: (context, index) {
+                            return cardList(myLists[index], index);
+                          }),
                 ),
               ),
             ],
@@ -175,19 +183,22 @@ class _every_taskListState extends State<every_taskList> {
     );
   }
 
-
-  _clean_done_lists(){
-    
+  _clean_done_lists() {
     setState(() {
-      myLists.removeWhere((e) => e.allDoneInList == e.sizeListOfTasks);
+      myLists.removeWhere((e) {
+
+        if(e.allDoneInList == e.sizeListOfTasks){
+          Lists_firebase().DeleteList(e.getNameList);
+          return e.allDoneInList == e.sizeListOfTasks;
+        }
+        return false;
+      });
     });
   }
-
 
   //-------------------------------
   // VISUAL: CREATE EVERY CARD LIST
   //-------------------------------
-
   Container cardList(TaskList taskList, int index) {
     Color selCol = R_Colors().listOfRColors()[index % 10];
 
@@ -195,36 +206,31 @@ class _every_taskListState extends State<every_taskList> {
         height: 150,
         width: 150,
         child: GestureDetector(
-
-          onTap: (){
-
+          onTap: () {
             Navigator.of(context)
-              .pushNamed("/tasks_in_list", arguments: taskList)
-              .then((value) {
-                setState(() {
-                  // ToDo actualizar la lista con los cambios realizados
-                });
+                .pushNamed("/tasks_in_list", arguments: taskList)
+                .then((value) {
+              setState(() {
+                // ToDo actualizar la lista con los cambios realizados
               });
+            });
           },
-
-
-          onLongPress: (){
+          onLongPress: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Do you want to remove this list?"),
               duration: const Duration(seconds: 4),
               action: SnackBarAction(
                 textColor: my_Colors.green,
                 label: "Yes",
-                onPressed: (){
+                onPressed: () {
                   setState(() {
+                    Lists_firebase().DeleteList(myLists[index].nameList!);
                     myLists.removeAt(index);
                   });
                 },
               ),
             ));
           },
-
-
           child: Card(
               elevation: 3,
               shape: RoundedRectangleBorder(
@@ -237,14 +243,15 @@ class _every_taskListState extends State<every_taskList> {
                   child: Column(children: <Widget>[
                     // Row of counter and Circle
                     Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 1.0, vertical: 1),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1.0, vertical: 1),
                       child: Row(
                         children: [
                           taskList.sizeListOfTasks == 0
                               ? Circle_Counter(0, 50, 10, selCol)
                               : Circle_Counter(
-                                  taskList.allDoneInList / taskList.sizeListOfTasks,
+                                  taskList.allDoneInList /
+                                      taskList.sizeListOfTasks,
                                   50,
                                   10,
                                   selCol),
@@ -256,11 +263,11 @@ class _every_taskListState extends State<every_taskList> {
                         ],
                       ),
                     ),
-        
+
                     Spacer(
                       flex: 1,
                     ),
-        
+
                     // List title
                     Container(
                       width: double.infinity,
@@ -271,19 +278,4 @@ class _every_taskListState extends State<every_taskList> {
                   ]))),
         ));
   }
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-

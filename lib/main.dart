@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:my_to_do/DB/db_list_tasks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:my_to_do/DB/instant_firebase.dart';
+import 'package:my_to_do/DB/lists_firebase.dart';
 import 'package:my_to_do/Log/google_sign_in.dart';
 import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
@@ -51,8 +52,7 @@ class main_screen extends StatefulWidget {
 
 class _main_screenState extends State<main_screen> with SingleTickerProviderStateMixin {
   // Fill the list with the tasks and lists of DB
-  // List<Task> MyinstantTasksList = [];
-  List<TaskList> MytaskListList = [];
+
   final contadorStream = new StreamController<int>();
 
   @override
@@ -66,7 +66,7 @@ class _main_screenState extends State<main_screen> with SingleTickerProviderStat
   void initState() {
     super.initState();
 
-    MytaskListList = db_list_tasks().start_myListOfTasks();
+    //MytaskListList = db_list_tasks().start_myListOfTasks();
     
   }
 
@@ -92,7 +92,7 @@ class _main_screenState extends State<main_screen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 SizedBox(
-                  height: 20,
+                  height: 25,
                 ),
 
                 // Title
@@ -101,11 +101,6 @@ class _main_screenState extends State<main_screen> with SingleTickerProviderStat
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Row(children: [
                     Expanded(child: Main_title()),
-
-                    // IconButton(onPressed: (){
-                    //   Navigator.popAndPushNamed(context, '/Log_In_page');
-                    // }, icon: Icon(Icons.more_vert_sharp, color: my_Colors.black,)),
-
                     PopupMenuButton(
                         onSelected: (v) {
                           if (v == 0) {
@@ -137,53 +132,14 @@ class _main_screenState extends State<main_screen> with SingleTickerProviderStat
                   ]),
                 ),
 
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 10,),
+
+
+                every_taskList_in_main(),
+
+                SizedBox(height: 10,),
 
                 // Title of lists
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, "/list_lists"),
-                    child: Row(children: [
-                      Title18("List of tasks"),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right_outlined,
-                        color: R_Colors.green,
-                      ),
-                      Spacer(),
-                      little_text_counter_normal(
-                          MytaskListList.length.toString()),
-                    ]),
-                  ),
-                ),
-
-                SizedBox(
-                  height: 10,
-                ),
-
-                // LIST OF LISTS
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // When there are lists
-                      MytaskListList.length > 0
-                          ? Expanded(
-                              child: every_taskList_in_main(MytaskListList))
-                          : Center(child: NoListsInMain()),
-                    ],
-                  ),
-                ),
-
-                SizedBox(
-                  height: 25,
-                ),
 
                 // INSTANT TASKS
                 Expanded(child: taskListStyle())
@@ -207,24 +163,86 @@ class _main_screenState extends State<main_screen> with SingleTickerProviderStat
 //-------------------------------
 // EVERY-TASKlIST
 //-------------------------------
-class every_taskList_in_main extends StatelessWidget {
-  final List<TaskList> ListOfLists;
-  every_taskList_in_main(this.ListOfLists);
+class every_taskList_in_main extends StatefulWidget {
+  every_taskList_in_main();
+  @override
+  State<every_taskList_in_main> createState() => _every_taskList_in_mainState();
+}
+
+class _every_taskList_in_mainState extends State<every_taskList_in_main> {
+  List<TaskList> ListOfLists = [];
+  @override
+  void initState() {
+    super.initState();
+    cargarListas();
+  }
+
+
+  cargarListas() async {
+    ListOfLists = await Lists_firebase().getAllLists();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120.0,
-      child: ListView.builder(
-        itemCount: ListOfLists.length,
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          TaskList taskList = ListOfLists[index];
-          return everyTaskListInMain(
-              taskList, index, ListOfLists[index].sizeListOfTasks);
-        },
-      ),
+    return Column(
+      children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, "/list_lists"),
+                    child: Row(children: [
+                      Title18("List of tasks"),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right_outlined,
+                        color: R_Colors.green,
+                      ),
+                      Spacer(),
+                      little_text_counter_normal(
+                          ListOfLists.length.toString()),
+                    ]),
+                  ),
+                ),
+
+                SizedBox(
+                  height: 10,
+                ),
+
+                // LIST OF LISTS
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      // When there are lists
+                      ListOfLists.length > 0
+                          ? Expanded(
+                              child: SizedBox(
+                                  height: 120.0,
+                                  child: ListView.builder(
+                                    itemCount: ListOfLists.length,
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      TaskList taskList = ListOfLists[index];
+                                      return everyTaskListInMain(
+                                          taskList, index, ListOfLists[index].sizeListOfTasks);
+                                    },
+                                  ),
+                                ),)
+                          : Center(child: NoListsInMain()),
+                    ],
+                  ),
+                ),
+
+                
+
+
+        
+      ],
     );
   }
 }
@@ -314,6 +332,8 @@ class _everyTaskListInMaineState extends State<everyTaskListInMain> {
     );
   }
 }
+
+
 
 //-------------------------------
 // INSTANT TASK LIST CLASS
@@ -441,7 +461,6 @@ class _taskListStyleState extends State<taskListStyle>
   // Give a task for being create
   SizeTransition taskStyle(BuildContext context, Task task, int index,
       StreamController contadorStream, Animation<double> animation) {
-
     return SizeTransition(
       sizeFactor: animation,
       child: Padding(

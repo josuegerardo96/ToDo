@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:my_to_do/Objects/task.dart';
 
 
@@ -6,8 +8,8 @@ import 'package:my_to_do/Objects/task.dart';
 
 class TaskList{
 
-  String nameList;
-  List<Task> ListOfTasks;
+  String? nameList;
+  List<Task>? ListOfTasks;
 
 
 
@@ -21,9 +23,9 @@ class TaskList{
   get getListOfTasks => this.ListOfTasks;
   set setListOfTasks( ListOfTasks) => this.ListOfTasks = ListOfTasks;
 
-  get sizeListOfTasks => this.ListOfTasks.length;
+  get sizeListOfTasks => this.ListOfTasks!.length;
 
-  get allDoneInList => this.ListOfTasks.where((e) => e.getState==false).length;
+  get allDoneInList => this.ListOfTasks!.where((e) => e.getState==false).length;
 
 
 }

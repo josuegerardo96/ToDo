@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, camel_case_types
 import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_to_do/Objects/task.dart';
@@ -23,6 +22,7 @@ class Instant_Firebase {
     });
     return newDoc.id.toString();
   }
+
 
   Update(Task task) {
     final firebase = FirebaseFirestore.instance;

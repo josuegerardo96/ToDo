@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:my_to_do/DB/lists_firebase.dart';
 import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
 import 'package:my_to_do/helpers/Colors/randomColors.dart';
@@ -24,7 +25,7 @@ class _tasksInOneListState extends State<tasksInOneList> {
   @override
   void initState() {
     super.initState();
-    widget.oneTaskList.ListOfTasks.sort((a, b) {
+    widget.oneTaskList.ListOfTasks!.sort((a, b) {
       if (a.getState == true) {
         return -1;
       } else {
@@ -49,14 +50,16 @@ class _tasksInOneListState extends State<tasksInOneList> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+
+                    
                     Expanded(
-                        child: widget.oneTaskList.sizeListOfTasks > 0
-                            ? taskListStyleInList(
+                        child:taskListStyleInList(
                                 widget.oneTaskList.getListOfTasks,
-                                widget.oneTaskList.nameList)
-                            : NoLists()),
+                                widget.oneTaskList.nameList!)
+                            ),
                   ],
                 ),
+
 
               ],
             ),
@@ -270,6 +273,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
                       contador++;
                       task.state = false;
                       done_and_down(index);
+                      Lists_firebase().UpdateTaskInList(widget.list_name, task);
 
                       if(contador == widget._tasks.length && contador != 0){
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -283,6 +287,7 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
                       contador--;
                       task.state = true;
                       undown_and_up(index);
+                      Lists_firebase().UpdateTaskInList(widget.list_name, task);
                     }
                   });
 
@@ -317,6 +322,8 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
                     setState(() {
                       task.setTaskTopic = new_task_topic;
                     });
+                    Lists_firebase().UpdateTaskInList(widget.list_name, task);
+                    //
                   }
 
                   
@@ -350,11 +357,13 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
       MaterialPageRoute(builder: 
       (context)=> Write_Task(task: "")));
 
-      if(task_name != ""){
-        setState(() {
-          insert_task(Task(taskTopic: task_name, state: true));
-        });
-      } 
+    if(task_name != ""){
+      Task task = Task(taskTopic: task_name, state: true);
+      task.setId = Lists_firebase().InsertTaskInList(widget.list_name, task);
+      setState(() {
+        insert_task(task);
+      });
+    } 
   }
 
   void _changeNameOfList() async {
@@ -379,6 +388,11 @@ class _taskListStyleInListState extends State<taskListStyleInList> {
           if (widget._tasks[i].getState == false) {
             Task taskk = widget._tasks[i];
             widget._tasks.removeAt(i);
+
+            if (taskk.getId != null) {
+              Lists_firebase().DeleteTaskInList(widget.list_name, taskk);
+            }
+
             listKey.currentState!.removeItem(
               i,
               (context, animation) =>

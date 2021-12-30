@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:flutter/material.dart';
-//import 'package:google_fonts/google_fonts.dart';
 import 'package:my_to_do/helpers/Colors/colorss.dart';
 import 'package:my_to_do/helpers/buttons.dart';
 import 'package:my_to_do/helpers/texts.dart';
@@ -20,7 +19,7 @@ Container NoListsInMain(){
 
     
     child: Card(
-      elevation: 3,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         side: BorderSide(
           color: my_Colors.light_grey,
@@ -79,7 +78,7 @@ Container NoInstantTasks(){
                 height: 120,
                 width: 120,
               ),    
-              SizedBox(height: 20.0),        
+              SizedBox(height: 5.0),        
               text16_bold("You have nothing to do"),
             ],
           )
