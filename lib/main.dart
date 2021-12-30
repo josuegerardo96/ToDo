@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; 
-import 'package:my_to_do/DB/db_list_tasks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:my_to_do/DB/instant_firebase.dart';
 import 'package:my_to_do/DB/lists_firebase.dart';
@@ -61,14 +60,6 @@ class _main_screenState extends State<main_screen> with SingleTickerProviderStat
     super.dispose();
   }
 
-
-  @override
-  void initState() {
-    super.initState();
-
-    //MytaskListList = db_list_tasks().start_myListOfTasks();
-    
-  }
 
 
   @override
@@ -190,7 +181,14 @@ class _every_taskList_in_mainState extends State<every_taskList_in_main> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, "/list_lists"),
+                    onTap: () => Navigator.pushNamed(context, "/list_lists").then(
+                      (e) async {
+                        ListOfLists = await Lists_firebase().getAllLists();
+                        setState(() {
+                          
+                        });
+                      }
+                    ),
                     child: Row(children: [
                       Title18("List of tasks"),
                       SizedBox(
@@ -233,7 +231,16 @@ class _every_taskList_in_mainState extends State<every_taskList_in_main> {
                                     },
                                   ),
                                 ),)
-                          : Center(child: NoListsInMain()),
+                          : Center(child: GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, "/list_lists").then(
+                                    (e) async {
+                                      ListOfLists = await Lists_firebase().getAllLists();
+                                      setState(() {
+                                        
+                                      });
+                                    }
+                                  ),
+                            child: NoListsInMain())),
                     ],
                   ),
                 ),

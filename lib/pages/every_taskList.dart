@@ -2,14 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_to_do/Objects/task.dart';
 import 'package:my_to_do/Objects/taskList.dart';
 import 'package:my_to_do/helpers/Colors/randomColors.dart';
 import 'package:my_to_do/helpers/buttons.dart';
 import 'package:my_to_do/helpers/task_circle.dart';
 import 'package:my_to_do/helpers/empty_spaces.dart';
 import 'package:my_to_do/helpers/Colors/colorss.dart';
-import 'package:my_to_do/DB/db_list_tasks.dart';
 import 'package:my_to_do/helpers/texts.dart';
 import 'package:my_to_do/DB/lists_firebase.dart';
 
