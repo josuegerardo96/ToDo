@@ -88,34 +88,38 @@ class Lists_firebase{
   // GET ALL THE ELEMENTS
   //--------------------------------
   getAllLists() async {
-    final firebase = FirebaseFirestore.instance;
-    CollectionReference _co = firebase.collection(_user!.email.toString());
-    QuerySnapshot querySnapshot = await _co.get();
-    List<dynamic> listName = querySnapshot.docs.map(
-      (e){
-        Map listName = e.data()! as Map<String,dynamic>;
-        return listName['listName'];
-      }
-    ).toList();
-
-    List<TaskList> tasklist = [];
-    
-    for (String i in listName) {
-      CollectionReference _co2 = firebase.collection(_user!.email.toString())
-                    .doc(i)
-                    .collection('Tasks');
+    try {
+      final firebase = FirebaseFirestore.instance;
+      CollectionReference _co = firebase.collection(_user!.email.toString());
+      QuerySnapshot querySnapshot = await _co.get();
+      List<dynamic> listName = querySnapshot.docs.map(
+        (e){
+          Map listName = e.data()! as Map<String,dynamic>;
+          return listName['listName'];
+        }
+      ).toList();
       
-      QuerySnapshot querySnapshot2 = await _co2.get();
-      List<Task> listOfTasks = [];
-
-      for (var i in querySnapshot2.docs) {
-        listOfTasks.add(Task.fromJSON(json: i.data()! as Map<String,dynamic>));
+      List<TaskList> tasklist = [];
+      
+      for (String i in listName) {
+        CollectionReference _co2 = firebase.collection(_user!.email.toString())
+                      .doc(i)
+                      .collection('Tasks');
+        
+        QuerySnapshot querySnapshot2 = await _co2.get();
+        List<Task> listOfTasks = [];
+      
+        for (var i in querySnapshot2.docs) {
+          listOfTasks.add(Task.fromJSON(json: i.data()! as Map<String,dynamic>));
+        }
+      
+        listOfTasks.length > 0 ? print(listOfTasks[0].getTaskTopic):print("no hay nada");
+        tasklist.add(TaskList(nameList: i, ListOfTasks: listOfTasks));
       }
-
-      listOfTasks.length > 0 ? print(listOfTasks[0].getTaskTopic):print("no hay nada");
-      tasklist.add(TaskList(nameList: i, ListOfTasks: listOfTasks));
+      return tasklist;
+    } on Exception catch (e) {
+      return [];
     }
-    return tasklist;
 
   }
 

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:853742806454:android:eab20796c2d31d0962cd17",
+        "mobilesdk_app_id": "1:853742806454:android:cd6c796ef190ea5962cd17",
         "android_client_info": {
-          "package_name": "com.example.my_to_do"
+          "package_name": "com.pragmaco.mytasks"
         }
       },
       "oauth_client": [

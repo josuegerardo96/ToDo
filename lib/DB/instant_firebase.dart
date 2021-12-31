@@ -49,25 +49,29 @@ class Instant_Firebase {
   }
 
   Future<List<Task>> getAllTasks() async {
-    final firebase = FirebaseFirestore.instance;
-    CollectionReference _co = firebase
-        .collection(_user!.email.toString())
-        .doc('Instant')
-        .collection('List of Instants');
-
-    QuerySnapshot querySnapshot = await _co.get();
-    List<Task> lista = querySnapshot.docs
-        .map((e) => Task.fromJSON(json: e.data()! as Map<String, dynamic>))
-        .toList();
-
-    lista.sort((a, b) {
-      if (a.getState == true) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-
-    return lista;
+    try {
+      final firebase = FirebaseFirestore.instance;
+      CollectionReference _co = firebase
+          .collection(_user!.email.toString())
+          .doc('Instant')
+          .collection('List of Instants');
+      
+      QuerySnapshot querySnapshot = await _co.get();
+      List<Task> lista = querySnapshot.docs
+          .map((e) => Task.fromJSON(json: e.data()! as Map<String, dynamic>))
+          .toList();
+      
+      lista.sort((a, b) {
+        if (a.getState == true) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+      
+      return lista;
+    } on Exception catch (e) {
+      return [];
+    }
   }
 }

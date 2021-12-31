@@ -170,7 +170,11 @@ class _every_taskList_in_mainState extends State<every_taskList_in_main> {
 
 
   cargarListas() async {
-    ListOfLists = await Lists_firebase().getAllLists();
+    try {
+      ListOfLists = await Lists_firebase().getAllLists();
+    } on Exception catch (e) {
+      ListOfLists = [];
+    }
     setState(() {});
   }
 
